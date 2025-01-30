@@ -5,20 +5,23 @@
 // DESCRIPTION:
 // References: 
 // https://doc.babylonjs.com/communityExtensions/Babylon.js+ExternalLibraries/BabylonJS_and_Vue/BabylonJS_and_Vue_1#vue-3
-// https://www.youtube.com/watch?v=NLZuUtiL50A&list=PLym1B0rdkvqhuCNSXzxw6ofEkrpYI70P4
 
-import { Engine, Scene, FreeCamera, Vector3, MeshBuilder, StandardMaterial, Color3, HemisphericLight, SceneLoader } from "@babylonjs/core";
+import { Engine, Scene, HemisphericLight, SceneLoader, UniversalCamera } from "@babylonjs/core";
 import "@babylonjs/loaders"
-import "@babylonjs/core/Debug/debugLayer";
-import { Inspector } from '@babylonjs/inspector';
+import { Camera } from '@/scenemodules/camera';
+import { warehouseSceneConfig } from "@/configs/ww-config";
 
 export class WarehouseScene {
-  scene: Scene;
+  canvas: HTMLCanvasElement;
   engine: Engine;
+  scene: Scene;
+  camera: UniversalCamera;
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(private cnvs: HTMLCanvasElement) {
+    this.canvas = cnvs;
     this.engine = new Engine(this.canvas, true);
     this.scene = this.CreateScene();
+    this.camera = new Camera(this)._camera;
 
     this.engine.runRenderLoop(() => {
       this.scene.render();
@@ -26,24 +29,17 @@ export class WarehouseScene {
   }
   
   CreateScene(): Scene {
-    const scene = new Scene(this.engine);
-    const camera = new FreeCamera("camera", new Vector3(15, 10, 8), this.scene);
-    camera.attachControl();
-    camera.speed = 0.25;
+    this.engine.displayLoadingUI();
 
+    const scene = new Scene(this.engine);
     const hemiLight = new HemisphericLight(
       "hemiLight",
-      new Vector3(0, 1, 0),
-      this.scene
+      warehouseSceneConfig.light.dirrection,
+      scene
     );
-
-    hemiLight.intensity = 1.5;
-
-    camera.setTarget(new Vector3(-9.32, 3.95, -1.07));
+    hemiLight.intensity = warehouseSceneConfig.light.intensity;
 
     this.LoadModels();
-
-
 
     return scene;
   }
@@ -52,10 +48,10 @@ export class WarehouseScene {
     const { meshes } = await SceneLoader.ImportMeshAsync(
       "",
       "./models/",
-      "warehouse_v0.glb"
+      warehouseSceneConfig.model.filename,
     );
-
-    console.log("meshes", meshes);
+    this.engine.hideLoadingUI();
+    // console.log("meshes", meshes);
   }
 
 }
