@@ -91,8 +91,22 @@ class thermostat:
         elif self.battery >=20:
             return 0 # ok working state
         return 3 # unknown state
-       
     
+    # function name:notification_settings(self)
+    # Description:This function is used to provide us with the notification status enabled
+    # Parameter:void:self
+    # return:Boolean
+    def notification_settings(self):
+        state = self.state()
+        if state == 0:
+           return False
+        elif state == 1:
+           return False
+        elif state == 2:
+            return True
+        else:
+            return True
+      
 
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
@@ -111,7 +125,7 @@ class thermostat:
         temperature = self.temperataure_generater()
         signal_strength = self.generate_signal_strength()
         state = self.state()
-        met_requirements = temperature <= self.temp_range[1] and temperature >= self.temp_range[0]
+        met_requirements = self.notification_settings()
 
         data_packets={
             "Method": "SensorMessage",
@@ -127,7 +141,7 @@ class thermostat:
                     "Data": str(temperature),
                     "DisplayData": f"{temperature}\u00b0 C",
                     "PlotValue": str(temperature),
-                    "MetNotificationRequirements": met_requirements,
+                    "MetNotificationRequirements":met_requirements,
                     "GatewayID": random.randint(100000, 999999),
                     "DataValues": str(temperature),
                     "DataTypes": "TemperatureData",
