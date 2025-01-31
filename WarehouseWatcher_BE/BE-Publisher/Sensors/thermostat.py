@@ -14,7 +14,7 @@ import datetime
 
 
 class thermostat:
-    def __init__(self,sensor_name,temp_range,battery_drain_cycle):
+    def __init__(self,sensor_name,temp_range,drain_cycle):
         self.sensor_name=sensor_name
         self.temp_range=temp_range
         self.sensor_id=str(uuid.uuid4)
@@ -24,7 +24,10 @@ class thermostat:
         self.base_signal_strength=100           
         self.min_voltage=2.5
         self.lowPower_threshold=20 # making it as a low threashold for battery
-
+        self.battery_drain_cycle=drain_cycle
+        self.drain_per_cycle=100 /self.battery_drain_cycle
+        self.cycle_count=0
+        
     # function name:temperataure_generater(self)
     # Description:This funciton is used to provide us with the temperature
     # Parameter:void:
@@ -38,24 +41,20 @@ class thermostat:
     # function name:battery_updates()
     # Description:This function is used to simulate and  update the battey drain and life
     # Parameter:void:self
-    # return:int number:battery.
-    
+    # return:int number:battery
 
     def battery_updates(self):
-
-        if self.battery <=0:
+        if self.battery <= 0:
+            print("Battery depleted. Sensor shutting down.")
             return 0
-        
-        if self.battery < self.lowPower_threshold:
-            drain_rate*=0.5  #reduces the drain in the low power mode 
-        
-        if self.battery >0:
-            drain_rate=random.uniform(0.5,2.5)
-            self.battery=max(0,self.battery-drain_rate)
-    
-       
-        return round(self.battery,2)
-    
+        self.cycle_count += 1
+
+        adjusted_drain = self.drain_per_cycle  # Keep drain rate unchanged
+        self.battery = max(0, self.battery - adjusted_drain)
+        print(f"Cycle {self.cycle_count}/{self.battery_drain_cycle}: Battery = {round(self.battery, 2)}%")
+
+        return round(self.battery, 2)
+
     # function name:update_voltage(self)
     # Description:This function is used to simulate the voltage need for this sensor
     # Parameter:void:self
