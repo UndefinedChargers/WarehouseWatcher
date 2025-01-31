@@ -56,9 +56,9 @@ TOPICS={
 }
 
 sensors= {
-     "Room": thermostat("Room", (20.0, 25.0), battery_drain_cycle=100),
-     "Refrigerator": thermostat("Refrigerator", (2.0, 5.0), battery_drain_cycle=150),
-     "Freezer": thermostat("Freezer", (-18.0, -15.0), battery_drain_cycle=200),
+     "Room": thermostat("Room", (20.0, 25.0),20),
+    "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
+    "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
 }
 
 
