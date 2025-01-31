@@ -3,6 +3,8 @@
 __pycache__/
 *.py[cod]
 WarehouseWatcher\WarehouseWatcher_BE\BE-Publisher\Sensors\__pycache__
+
+WarehouseWatcher\WarehouseWatcher_BE\BE-Publisher\__pycache__
 # C extensions
 *.so
 

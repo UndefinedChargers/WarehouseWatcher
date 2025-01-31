@@ -45,8 +45,14 @@ class thermostat:
 
         if self.battery <=0:
             return 0
+        
+        if self.battery < self.lowPower_threshold:
+            drain_rate*=0.5  #reduces the drain in the low power mode 
+        
+        if self.battery >0:
+            drain_rate=random.uniform(0.5,2.5)
+            self.battery=max(0,self.battery-drain_rate)
     
-       
        
         return round(self.battery,2)
     
