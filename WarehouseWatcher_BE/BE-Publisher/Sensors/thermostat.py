@@ -14,17 +14,20 @@ import datetime
 
 
 class thermostat:
-    def __init__(self,sensor_name,temp_range,battery_drain_cycle):
+    def __init__(self,sensor_name,temp_range,drain_cycle):
         self.sensor_name=sensor_name
         self.temp_range=temp_range
         self.sensor_id=str(uuid.uuid4)
-        self.battery=100 #getting started with full battery
+
+        self.battery=100     #getting started with full battery
         self.base_voltage=4 # its maximum voltage
         self.base_signal_strength=100           
-        self.battery_drain_cycle=battery_drain_cycle # its basically gives the number of cycles until battery drains completely
-        self.drain_per_cycle=100/battery_drain_cycle
         self.min_voltage=2.5
-
+        self.lowPower_threshold=20 # making it as a low threashold for battery
+        self.battery_drain_cycle=drain_cycle
+        self.drain_per_cycle=100 /self.battery_drain_cycle
+        self.cycle_count=0
+        
     # function name:temperataure_generater(self)
     # Description:This funciton is used to provide us with the temperature
     # Parameter:void:
@@ -38,14 +41,20 @@ class thermostat:
     # function name:battery_updates()
     # Description:This function is used to simulate and  update the battey drain and life
     # Parameter:void:self
-    # return:int number:battery.
-    
+    # return:int number:battery
 
     def battery_updates(self):
-        if self.battery>0:
-           self.base_signal_Strength=max(0,self.battery-random.uniform(0.001,0.1))
-        return round(self.battery,2)
-    
+        if self.battery <= 0:
+            print("Battery depleted. Sensor shutting down.")
+            return 0
+        self.cycle_count += 1
+
+        adjusted_drain = self.drain_per_cycle  # Keep drain rate unchanged
+        self.battery = max(0, self.battery - adjusted_drain)
+        print(f"Cycle {self.cycle_count}/{self.battery_drain_cycle}: Battery = {round(self.battery, 2)}%")
+
+        return round(self.battery, 2)
+
     # function name:update_voltage(self)
     # Description:This function is used to simulate the voltage need for this sensor
     # Parameter:void:self
@@ -74,11 +83,30 @@ class thermostat:
     # Parameter:void:self
     # return:int number:base_segnal_strength
     def state(self):
-        if self.battery<=0:
-            return 4
-        probabilities=[1,2,3]
-        return random.choices([1,2,3],probabilities)[0]
+        
+        if self.battery <=0 or self.update_voltage() <=self.min_voltage:
+            return 2 # indicating critical state(battery is low)
+        elif self.battery < 20:
+            return 1 # its basically a warning state (Low battery maybe)
+        elif self.battery >=20:
+            return 0 # ok working state
+        return 3 # unknown state
     
+    # function name:notification_settings(self)
+    # Description:This function is used to provide us with the notification status enabled
+    # Parameter:void:self
+    # return:Boolean
+    def notification_settings(self):
+        state = self.state()
+        if state == 0:
+           return False
+        elif state == 1:
+           return False
+        elif state == 2:
+            return True
+        else:
+            return True
+      
 
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
@@ -97,7 +125,7 @@ class thermostat:
         temperature = self.temperataure_generater()
         signal_strength = self.generate_signal_strength()
         state = self.state()
-        met_requirements = temperature <= self.temp_range[1] and temperature >= self.temp_range[0]
+        met_requirements = self.notification_settings()
 
         data_packets={
             "Method": "SensorMessage",
@@ -113,7 +141,7 @@ class thermostat:
                     "Data": str(temperature),
                     "DisplayData": f"{temperature}\u00b0 C",
                     "PlotValue": str(temperature),
-                    "MetNotificationRequirements": met_requirements,
+                    "MetNotificationRequirements":met_requirements,
                     "GatewayID": random.randint(100000, 999999),
                     "DataValues": str(temperature),
                     "DataTypes": "TemperatureData",
