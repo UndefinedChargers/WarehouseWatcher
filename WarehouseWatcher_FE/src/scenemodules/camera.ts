@@ -2,7 +2,8 @@
 // PROJECT: Warehouse Watcher
 // PROGRAMMER: Undefined Chargers - Yujung Park
 // FIRST VERSION: 2025-01-25
-// DESCRIPTION:
+// DESCRIPTION: ?? do we want another scene
+// !! set min, max
 
 import { warehouseSceneConfig } from "@/configs/ww-config";
 import { WarehouseScene } from "@/scenes/WarehouseScene";
@@ -22,8 +23,7 @@ export class Camera {
   CreateCamera(): UniversalCamera {
     const camera = new UniversalCamera("camera", warehouseSceneConfig.camera.initial_position, this._scene);
     camera.attachControl(this._canvas, true);
-    camera.speed = 0.1;
-
+    camera.speed = 0.3;
     camera.minZ = 0.3;
 
     camera.checkCollisions = true;
