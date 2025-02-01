@@ -7,6 +7,7 @@
 // cloud works only wss https://community.hivemq.com/t/how-to-connect-to-websocket-with-wss/1681 
 
 import mqtt from 'mqtt';
+import { useEnvTopicStore } from '@/stores/envTopicStore';
 
 export const subscribeMQTT = () => {
     const client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
@@ -23,8 +24,13 @@ export const subscribeMQTT = () => {
     });
     
     client.on('message', function (topic, message) {
-        console.log('Received message:', topic, message.toString());
+        // console.log('Received message:', topic, message.toString());
         // store the object
+        const obj = JSON.parse(message);
+        const envStore = useEnvTopicStore();
+        envStore.setTopicData(topic, obj);
+        const topicdata = envStore.individualTopicData(topic)?.data.Data;
+        console.log("individualTopicData", topicdata);
     });
     
     client.subscribe('#');
