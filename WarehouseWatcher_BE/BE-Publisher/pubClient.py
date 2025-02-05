@@ -24,9 +24,9 @@ load_dotenv() # used for setting up the environment variable for the project
 # password = config.get('DEFAULT', 'Password')
 # host = config.get('DEFAULT', 'Host')
 
-user =os.getenv("user")
-password = os.getenv("password")
-host = os.getenv("host")
+user =os.getenv("HIVEMQ_USER")
+password = os.getenv("HIVEMQ_PASS")
+host = os.getenv("HIVEMQ_HOST")
 
 TOPICS={
     "temperature": "Waterloo/Warehouse/{sensor_name}/temperature",
