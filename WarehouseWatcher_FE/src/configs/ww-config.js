@@ -11,7 +11,7 @@ export const warehouseSceneConfig = {
         intensity: 1.2,
     },
     model: {
-        filename: "warehouse_v1.glb",
+        filename: "warehouse_v2.glb",
     },
     camera: {
         initial_position: new Vector3(16.52, 10.24, 8.08),
@@ -21,9 +21,23 @@ export const warehouseSceneConfig = {
         panel_width: "15%",
         font_color: "white",
         panel_background: "#44444420",
-
     } 
 };
+
+export const sensor_object = [{
+    meshname: "sensor1_temp.001",
+    topic: "Waterloo/Warehouse/Thermostat/Room",
+},
+{
+    meshname: "sensor1_humidity.001",
+    topic: "Waterloo/Warehouse/Thermostat/",
+},
+{
+    meshname: "sensor1_air.001",
+    topic: "Waterloo/Warehouse/Thermostat/Room",
+},
+]
+
 
 
 export const inventory_data = {

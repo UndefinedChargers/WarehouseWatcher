@@ -13,6 +13,8 @@ import { Camera } from '@/scenemodules/camera';
 import { warehouseSceneConfig } from "@/configs/ww-config";
 import { useEnvTopicStore } from '@/stores/envTopicStore';
 import { GuiPanel } from "@/scenemodules/panel";
+import { EnvironmentSensor } from "@/scenemodules/envsensor";
+import { sensor_object } from "@/configs/ww-config";
 
 
 export class WarehouseScene {
@@ -38,7 +40,8 @@ export class WarehouseScene {
     await this.LoadModels();
     this._CreatePickingRay();
     new GuiPanel();
-    this.CreateEnvironmentSensor();
+    let envSensors = [];
+    sensor_object.forEach((obj) => envSensors.push(new EnvironmentSensor(this, obj.meshname)));
     
     this.engine.runRenderLoop(() => {
       this.scene.render();
@@ -92,94 +95,6 @@ export class WarehouseScene {
         // }
       }
     };
-  }
-
-  //
-  //
-  //
-  // !! make argument string aray later
-  CreateEnvironmentSensor(): void {
-    const topic = "Waterloo/Warehouse/Thermostat/Room"
-    const envstore = useEnvTopicStore();
-    const sensor = this.scene.getMeshById("thermo1");
-    var sensor_material = new BABYLON.StandardMaterial("mat", this.scene);
-    // var hl = new BABYLON.HighlightLayer("hl", this.scene);    
-    // hl.addMesh(sensor.subMeshes[0].getRenderingMesh(), new BABYLON.Color3(0,1,0))
-    var gl = new BABYLON.GlowLayer("gl", this.scene);
-    gl.addIncludedOnlyMesh(sensor.subMeshes[0].getRenderingMesh());
-
-    var adt = GUI.AdvancedDynamicTexture.CreateFullscreenUI("guitext");
-    adt.useInvalidateRectOptimization = false;
-
-    let sensor_text_rect = new GUI.Rectangle();
-    adt.addControl(sensor_text_rect);
-    sensor_text_rect.width = "150px";
-    sensor_text_rect.height = "100px";
-    sensor_text_rect.linkOffsetY = "-100px";
-    sensor_text_rect.transformCenterY = 1;
-    // sensor_text_rect.background = "red"
-    sensor_text_rect.background = "#00000050";
-    sensor_text_rect.color = "#02132450";
-    sensor_text_rect.thickness = 1;
-    // sensor_text_rect.alpha = 0.8;
-    sensor_text_rect.scaleX = 0;
-    sensor_text_rect.scaleY = 0;
-    sensor_text_rect.linkWithMesh(sensor);
-
-    let sensor_text = new GUI.TextBlock();
-    sensor_text.fontSize = 50;
-    sensor_text.color = "white";
-    sensor_text.textWrapping = true;
-    sensor_text.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    // sensor_text.textVerticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    sensor_text_rect.addControl(sensor_text);
-
-    let am_sesnor = new BABYLON.ActionManager(this.scene);
-    sensor.actionManager = am_sesnor;
-    console.log(this.scene);
-
-    am_sesnor.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function(e){
-      // console.log(e.meshUnderPointer.name);
-      let topicdata = envstore.individualTopicData(topic)?.data.Data;
-      sensor_text.text = topicdata;
-      sensor_text_rect.scaleX = 0.5;
-      sensor_text_rect.scaleY = 0.5;
-      sensor_text.color = "green";
-
-      // this.scene.beginAnimation(sensor_text_rect, 0, 10, false);
-    }));
-
-    am_sesnor.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function(e){
-      // this.scene.beginAnimation(sensor_text_rect, 10, 0, false);
-      sensor_text_rect.scaleX = 0;
-      sensor_text_rect.scaleY = 0;
-    }));
-
-
-    this.scene.onAfterRenderObservable.add(() => {
-      this.DisplayEnvironmentSensor(sensor, sensor_material);  
-    }, 250)
-  }
- 
-  //
-  //
-  //
-  DisplayEnvironmentSensor(sensor: BABYLON.AbstractMesh | null, material: BABYLON.StandardMaterial): void {
-    const topic = "Waterloo/Warehouse/Thermostat/Room"
-    const envstore = useEnvTopicStore();
-    let topicdata = envstore.individualTopicData(topic)?.data.Data;
-    let val = parseFloat(topicdata);
-        
-    if (val >= 23) {
-      material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-      sensor.material = material;
-    } else if (val < 23) {
-      material.emissiveColor = new BABYLON.Color3(0, 1, 0);
-      sensor.material = material;
-    } else { // null
-      material.emissiveColor = new BABYLON.Color3(0, 1, 0);
-      sensor.material = material;
-    }     
   }
 
   //
