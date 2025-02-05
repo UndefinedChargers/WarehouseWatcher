@@ -13,6 +13,8 @@ import { Camera } from '@/scenemodules/camera';
 import { warehouseSceneConfig } from "@/configs/ww-config";
 import { useEnvTopicStore } from '@/stores/envTopicStore';
 import { GuiPanel } from "@/scenemodules/panel";
+import { EnvironmentSensor } from "@/scenemodules/envsensor";
+import { sensor_object } from "@/configs/ww-config";
 
 
 export class WarehouseScene {
@@ -38,7 +40,8 @@ export class WarehouseScene {
     await this.LoadModels();
     this._CreatePickingRay();
     new GuiPanel();
-    this.CreateEnvironmentSensor();
+    let envSensors = [];
+    sensor_object.forEach((obj) => envSensors.push(new EnvironmentSensor(this, obj.meshname)));
     
     this.engine.runRenderLoop(() => {
       this.scene.render();
@@ -84,49 +87,14 @@ export class WarehouseScene {
       const hit = this.scene.pickWithRay(ray);
       if (hit.pickedMesh != null)
       {
-        // console.log(hit.pickedMesh.name);
+        console.log(hit.pickedMesh.name);
         // console.log(this.camera._currentTarget);
-        if (hit.pickedMesh.name == "thermo1")
-        {
-          this.DisplayGUI(hit.pickedMesh.name);
-        }
+        // if (hit.pickedMesh.name == "thermo1")
+        // {
+        //   this.DisplayGUI(hit.pickedMesh.name);
+        // }
       }
     };
-  }
-
-  //
-  //
-  //
-  // !! make argument string aray later
-  CreateEnvironmentSensor(): void {
-    var hl = new BABYLON.HighlightLayer("hl", this.scene);    
-    var sensor_material = new BABYLON.StandardMaterial("mat", this.scene);
-    const sensor = this.scene.getMeshById("thermo1");
-
-    this.scene.onAfterRenderObservable.add(() => {
-      this.DisplayEnvironmentSensor(sensor, sensor_material);  
-    }, 250)
-  }
-
-  //
-  //
-  //
-  DisplayEnvironmentSensor(sensor: BABYLON.AbstractMesh | null, material: BABYLON.StandardMaterial): void {
-    const topic = "Waterloo/Warehouse/Thermostat/Room"
-    const envstore = useEnvTopicStore();
-    let topicdata = envstore.individualTopicData(topic)?.data.Data;
-    let val = parseFloat(topicdata);
-        
-    if (val >= 23) {
-      material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-      sensor.material = material;
-    } else if (val < 23) {
-      material.emissiveColor = new BABYLON.Color3(0, 1, 0);
-      sensor.material = material;
-    } else { // null
-      material.emissiveColor = new BABYLON.Color3(0, 1, 0);
-      sensor.material = material;
-    }     
   }
 
   //

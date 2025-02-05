@@ -121,7 +121,7 @@ export class GuiPanel {
     item_rect.addControl(tb4);
     container.addControl(item_rect);
 
-    const path = "../public/pictogram/"+(itemObj.ghs)+".gif";
+    const path = "../pictogram/"+(itemObj.ghs)+".gif";
     const image_rect = new Rectangle();
     image_rect.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
     image_rect.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
