@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>Warehouse</h1>
+  <div class="cvs">
     <canvas />
   </div>
 </template>
@@ -22,10 +21,11 @@ export default defineComponent({
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@100;700&display=swap');
 
-div {
+#cvs {
   width:100%;
-  height:80%;
-  display:flex;
+  height:100%;
+  margin-top: 40px;
+  display:block;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -36,16 +36,18 @@ p {
   color:white;
   background:none;
   margin-bottom:1rem;
- font-family: 'Roboto Condensed';
+  font-family: 'Roboto Condensed';
   font-weight: 400;
   font-size:2rem;
 }
 
 canvas {
-  width:100%;
-  height:100%;
-  border:none;
-  outline:none;
+  width: 100%;
+  height: 100%;
+  background: none;
+  border-radius: 4px;
+  border: none;
+  outline: none;
   box-shadow:8px 8px 10px -6px #000000;
 }
 

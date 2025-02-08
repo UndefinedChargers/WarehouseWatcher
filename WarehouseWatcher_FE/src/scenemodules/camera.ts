@@ -21,20 +21,33 @@ export class Camera {
   }
 
   CreateCamera(): UniversalCamera {
-    const camera = new UniversalCamera("camera", warehouseSceneConfig.camera.initial_position, this._scene);
+    const camera = new UniversalCamera("unicam", warehouseSceneConfig.camera.initial_position, this._scene);
     camera.attachControl(this._canvas, true);
-    camera.speed = 0.3;
-    camera.minZ = 0.3;
-
+    camera.speed = 0.2;
+    camera.angularSensibility = 12000;
+    camera.minZ = 0.5;
+    camera.maxZ = 100;
     camera.checkCollisions = true;
-    
-    camera.inputs.addMouseWheel();
-    camera.inputs._mouseWheelInput.wheelPrecisionX = 0.1;
-    camera.inputs._mouseWheelInput.wheelPrecisionY = 0.1;
-    camera.inputs._mouseWheelInput.wheelPrecisionZ = 0.1;
+    camera.ellipsoid = new Vector3(1, 2, 1);
+    // camera.applyGravity = true;
+ 
+    // camera.inputs.addMouseWheel();
+    // camera.inputs._mouseWheelInput.wheelPrecisionX = 0.1;
+    // camera.inputs._mouseWheelInput.wheelPrecisionY = 0.1;
+    // camera.inputs._mouseWheelInput.wheelPrecisionZ = 0.1;
     camera.setTarget(warehouseSceneConfig.camera.initial_target);
     camera.attachControl(true);
+    // camera.keysUp = [38]; // arrow
+    // camera.keysDown = [40]; //arrow
+    // camera.keysRotateLeft = [37]; // arrow
+    // camera.keysRotateRight = [39]; // arrow
+    // camera.keysRight = [190]; // comma
+    // camera.keysLeft = [188]; // dot
+    camera.keysUpward = [33]; // pageup
+    camera.keysDownward = [34]; // pagedown
+
     
     return camera;
   } 
+
 }

@@ -61,7 +61,10 @@ export class WarehouseScene {
       scene
     );
     hemiLight.intensity = warehouseSceneConfig.light.intensity;
-        
+    scene.gravity = new BABYLON.Vector3(0, -0.1, 0);
+    scene.collisionsEnabled = true;
+    scene.freezeActiveMeshes();
+
     return scene;
   }
   
@@ -81,52 +84,63 @@ export class WarehouseScene {
   //
   //
   private _CreatePickingRay(): void {
-    // !! 3d btn set visibility on before render adn control? or just not use it... 
-    this.scene.onPointerDown = () => {
+    this.scene.onPointerUp = () => {
       const ray = this.scene.createPickingRay(this.scene.pointerX, this.scene.pointerY, BABYLON.Matrix.Identity(), this.camera, false);
       const hit = this.scene.pickWithRay(ray);
-      if (hit.pickedMesh != null)
+      
+      if (hit.pickedMesh !== null)
       {
-        console.log(hit.pickedMesh.name);
-        // console.log(this.camera._currentTarget);
-        // if (hit.pickedMesh.name == "thermo1")
-        // {
-        //   this.DisplayGUI(hit.pickedMesh.name);
-        // }
+        console.log("meshname", hit.pickedMesh.name);
+        this._MoveCamera(hit.pickedMesh.name);
       }
+      console.log("position", this.camera._position);
     };
   }
 
-  //
-  //
-  //
-  DisplayGUI(meshname: string): void {
-    const topic = "Waterloo/Warehouse/Thermostat/Room"
-    const envstore = useEnvTopicStore();
-    let topicdata = envstore.individualTopicData(topic)?.data.Data;
-    var mesh = this.scene.getMeshById(meshname);
-
-    // 3D
-    var manager = new GUI.GUI3DManager(this.scene);
-    var button = new GUI.Button3D("button");
-    manager.addControl(button);
-    // button.linkToTransformNode(this.scene.getMeshById("SHELF1"));
-    button.linkToTransformNode(mesh);
-    button.scaling.set (8, 1, 8);
-    button.node!.rotation.y += Math.PI*0.5;
-    // console.log(mesh.position.x, mesh.position.y, mesh.position.z);
-    button.position.y = 1.8;
-  
-    var text1 = new GUI.TextBlock();
-    text1.text = topicdata;
-    text1.color = "white";
-    text1.fontSize = 50;
-    button.content = text1;
-
-    button.onPointerUpObservable.add(function(){
-      // change this with visible later
-      button.dispose();
-      text1.dispose();
-    })
+  _MoveCamera(meshname: string): void {
+    var splitedname = meshname.split(/[_.]/) ;
+    let targetmesh = this.scene.getMeshById(meshname);
+    let excluded = warehouseSceneConfig.camera.exclude_obj.find(obj => obj === meshname);
+    console.log('splitedname',splitedname);
+    if (excluded !== null && excluded !== meshname && targetmesh !== null) {
+      var targetobject = warehouseSceneConfig.camera.target_obj.find(obj => obj.name === splitedname[0]);
+      console.log(excluded);
+      this.camera._position = targetobject.position;
+      this.camera.setTarget(targetmesh.absolutePosition); 
+    }    
   }
+
+  //
+  //
+  //
+  // DisplayGUI(meshname: string): void {
+  //   const topic = "Waterloo/Warehouse/Thermostat/Room"
+  //   const envstore = useEnvTopicStore();
+  //   let topicdata = envstore.individualTopicData(topic)?.data.Data;
+  //   var mesh = this.scene.getMeshById(meshname);
+
+  //   // 3D
+  //   var manager = new GUI.GUI3DManager(this.scene);
+  //   var button = new GUI.Button3D("button");
+  //   manager.addControl(button);
+  //   // button.linkToTransformNode(this.scene.getMeshById("SHELF1"));
+  //   button.linkToTransformNode(mesh);
+  //   button.scaling.set (8, 1, 8);
+  //   button.node!.rotation.y += Math.PI*0.5;
+  //   // console.log(mesh.position.x, mesh.position.y, mesh.position.z);
+  //   button.position.y = 1.8;
+  
+  //   var text1 = new GUI.TextBlock();
+  //   text1.text = topicdata;
+  //   text1.color = "white";
+  //   text1.fontSize = 50;
+  //   button.content = text1;
+
+  //   button.onPointerUpObservable.add(function(){
+  //     // change this with visible later
+  //     button.dispose();
+  //     text1.dispose();
+  //   })
+  // }
+
 }

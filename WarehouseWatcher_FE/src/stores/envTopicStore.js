@@ -1,3 +1,8 @@
+// FILE: envTopicStore.js
+// PROJECT: Warehouse Watcher
+// PROGRAMMER: Undefined Chargers - Yujung Park
+// FIRST VERSION: 
+// DESCRIPTION:
 
 import { defineStore } from 'pinia'
 
