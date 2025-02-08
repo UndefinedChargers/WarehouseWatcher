@@ -84,17 +84,33 @@ export class WarehouseScene {
   //
   //
   private _CreatePickingRay(): void {
-    this.scene.onPointerUp = () => {
-      const ray = this.scene.createPickingRay(this.scene.pointerX, this.scene.pointerY, BABYLON.Matrix.Identity(), this.camera, false);
-      const hit = this.scene.pickWithRay(ray);
+    this.scene.onPointerObservable.add((pointerInfo) => {
+      switch (pointerInfo.type) {
+        case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
+          if (pointerInfo.pickInfo.hit) {
+            if (pointerInfo.event.button === 0) {
+              if (pointerInfo.pickInfo.hit) {
+                var pickedmesh = pointerInfo.pickInfo.pickedMesh.name;
+                // console.log(pickedmesh);
+                this._MoveCamera(pickedmesh);
+              }
+            }
+          }
+        }
+      });
+
+    // this.scene.onPointerUp = () => {
+    //   const ray = this.scene.createPickingRay(this.scene.pointerX, this.scene.pointerY, BABYLON.Matrix.Identity(), this.camera, false);
+    //   const hit = this.scene.pickWithRay(ray);
       
-      if (hit.pickedMesh !== null)
-      {
-        console.log("meshname", hit.pickedMesh.name);
-        this._MoveCamera(hit.pickedMesh.name);
-      }
-      console.log("position", this.camera._position);
-    };
+    //   if (hit.pickedMesh !== null)
+    //   {
+    //     console.log("meshname", hit.pickedMesh.name);
+    //     this._MoveCamera(hit.pickedMesh.name);
+    //   }
+    //   console.log("position", this.camera._position);
+    // };
+
   }
 
   _MoveCamera(meshname: string): void {
