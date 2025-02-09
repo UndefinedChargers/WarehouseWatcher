@@ -1,67 +1,49 @@
 # FILE : influxClient.py
-# PROGRAMMER : Yujung Park
-# FIRST VERSION : 2024-02-03
-# DESCRIPTION : 
+# PROGRAMMER : William Anderson
+# FIRST VERSION : 2025-02-08
+# DESCRIPTION : Connects to the influxDB database and can parse and store incoming 
+#               sensor data.
 
 import os, time
 from influxdb_client_3 import InfluxDBClient3, Point
 from dotenv import load_dotenv
 
+load_dotenv()
 
-def main():
+token = os.getenv("INFLUXDB_TOKEN")
+org = os.getenv("INFLUXDB_ORG")
+host = os.getenv("INFLUXDB_HOST")
+database = "setup_test"
 
-  load_dotenv()
+client = InfluxDBClient3(host=host, token=token, org=org)
 
-  token = os.getenv("INFLUXDB_TOKEN")
-  org = "WW"
-  host = "https://us-east-1-1.aws.cloud2.influxdata.com"
+def store_data(topic, data):
+  print("Parsing JSON data.")
 
-  client = InfluxDBClient3(host=host, token=token, org=org)
-  database="WW"
+  # - Should I add a default value to .get() calls 
+  sensor_name = data.get('sensor_name') 
+  sensor_data = data.get('data', {})
 
-  data = {
-    "point1": {
-      "location": "Klamath",
-      "species": "bees",
-      "count": 23,
-    },
-    "point2": {
-      "location": "Portland",
-      "species": "ants",
-      "count": 30,
-    },
-    "point3": {
-      "location": "Klamath",
-      "species": "bees",
-      "count": 28,
-    },
-    "point4": {
-      "location": "Portland",
-      "species": "ants",
-      "count": 32,
-    },
-    "point5": {
-      "location": "Klamath",
-      "species": "bees",
-      "count": 29,
-    },
-    "point6": {
-      "location": "Portland",
-      "species": "ants",
-      "count": 40,
-    },
-  }
+  point = (
+    Point("sensor_data") 
+      .tag("sensor_name", sensor_name)  
+      .field("topic", topic)
+      .field("data_message_guid", sensor_data.get('MessageID'))
+      .field("sensor_id", sensor_data.get('SensorID'))
+      .field("message_date", sensor_data.get('MessageDate'))
+      .field("state", sensor_data.get('State'))
+      .field("signal_strength", sensor_data.get('SignalStrength'))
+      .field("voltage", sensor_data.get('Voltage'))
+      .field("battery", sensor_data.get('Battery'))
+      .field("temperature", sensor_data.get('Data'))
+      .field("display_temperature", sensor_data.get('DisplayData')) 
+      .field("plot_temperature", sensor_data.get('PlotValue'))
+      .field("met_notification_requirements", sensor_data.get('MetNotificationRequirements'))
+      .field("gateway_id", sensor_data.get('GatewayID')) 
+      .field("data_values", sensor_data.get('DataValues'))
+      .field("data_types", sensor_data.get('DataTypes'))
+      .field("plot_values", sensor_data.get('PlotValues'))
+      .field("plot_labels", sensor_data.get('PlotLabels'))
+  )
 
-  for key in data:
-    point = (
-      Point("census")
-      .tag("location", data[key]["location"])
-      .field(data[key]["species"], data[key]["count"])
-    )
-    client.write(database=database, record=point)
-    time.sleep(1) # separate points by 1 second
-
-  print("Complete. Return to the InfluxDB UI.")
-
-if __name__ == '__main__':
-  main()
+  client.write(database=database, record=point)
