@@ -11,6 +11,7 @@ import configparser
 from Sensors.thermostat import thermostat
 import json
 from dotenv import load_dotenv
+from Sensors.air_quality import AirQualitySensor
 
 import os
  
@@ -49,16 +50,18 @@ TOPICS={
     "data_types": "Waterloo/Warehouse/{sensor_name}/data_types",
     "plot_values": "Waterloo/Warehouse/{sensor_name}/plot_values",
     "plot_labels": "Waterloo/Warehouse/{sensor_name}/plot_labels",
-    "allsensor_data": "Waterloo/Warehouse/allsensor_data" ,
-    "thermostat": "Waterloo/Warehouse/Thermostat/"
+    "allsensor_data": "Waterloo/Warehouse/allsensor_data",
+    "thermostat": "Waterloo/Warehouse/Thermostat/",
+    "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 
     
 }
 
 sensors= {
-     "Room": thermostat("Room", (20.0, 25.0),20),
-    "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
+    #  "Room": thermostat("Room", (20.0, 25.0),20),
+    # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
     "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    "AirQuality": AirQualitySensor("Warehouse_Air_Sensor", pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
 }
 
 
@@ -121,8 +124,8 @@ def publish_all_sensorData(client):
    
    allsensor_data=[]
    
-   for sensor_name,thermostat_instance in sensors.items():
-      data=thermostat_instance.generate_sensor_data()
+   for sensor_name,Sensor_instance in sensors.items():
+      data=Sensor_instance.generate_sensor_data()
       if data is None:
          print(f"{sensor_name} has shut down")
          continue
@@ -133,7 +136,7 @@ def publish_all_sensorData(client):
          "data":final_result
       }
       allsensor_data.append(sensor_Data)
-      print(allsensor_data)
+    #   print(allsensor_data)
       topics=TOPICS["allsensor_data"]
       payload=json.dumps(allsensor_data)
       client.publish(topics,payload,qos=1)
@@ -173,12 +176,16 @@ if __name__ == "__main__":
     client.connect(host, 8883)
     client.loop_start()
     try:
-        #for i in range(1,3): # test code
-        while TOPICS:
+        for i in range(1,4): # test code
+        # while TOPICS:
             # publish_sensorData(client)
             # if "allsensor_data" in TOPICS:
             #    publish_all_sensorData(client)
-            publish_data(client)
+            # publish_data(client)
+            print("=============================================================")
+            publish_all_sensorData(client)
+            # publish_data(client)
+            print("=============================================================")
             time.sleep(3)
     except KeyboardInterrupt:
      print("Exiting...")
