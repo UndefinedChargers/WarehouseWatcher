@@ -9,7 +9,11 @@ import { AdvancedDynamicTexture, Image, Control, Rectangle, ScrollViewer, StackP
 import { warehouseSceneConfig, inventory_data } from "@/configs/ww-config";
 
 export class GuiPanel {
+  _container: StackPanel;
+  _detailsContainer: StackPanel;
   constructor() {
+    this._container = new StackPanel();
+    this._detailsContainer = new StackPanel();
     this.createGuiPannel();
   }
   
@@ -30,7 +34,7 @@ export class GuiPanel {
     panelUI.addControl(panel);
     
     // panelUI.panel.panelContainer
-    const panelContainer = new StackPanel();
+    const panelContainer = this._container;
     panelContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP; 
     panel.addControl(panelContainer);
 
@@ -41,24 +45,24 @@ export class GuiPanel {
     panelContainer.addControl(this.space(0.003*window.innerWidth));
 
     // panelUI.panel.panelContainer.StackPanel
-    const detailsContainer = new StackPanel();
-    detailsContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-    panelContainer.addControl(detailsContainer);
+    // const detailsContainer = new StackPanel();
+    this._detailsContainer.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    panelContainer.addControl(this._detailsContainer);
     
-    this.buildDetails(data, detailsContainer);
+    // this.buildDetails(data);
   }
 
-  buildDetails(data: object, container: StackPanel) {
-    container.clearControls();
+  buildDetails(data: object) {
+    this._detailsContainer.clearControls();
 
-    const top = this.getTop(container);
+    const top = this.getTop(this._detailsContainer);
     const height = window.innerHeight-top-100;
     const sv = new ScrollViewer();
     sv.barSize = 0.006 * window.innerWidth;
     sv.thickness = 0;
     sv.color = "grey";
     sv.height = height + "px";
-    container.addControl(sv);
+    this._detailsContainer.addControl(sv);
 
     // sub container
     const subContainer = new StackPanel();
@@ -133,6 +137,8 @@ export class GuiPanel {
     image_rect.addControl(image);
     item_rect.addControl(image_rect);
   }
+
+  
 
   getTop(container: StackPanel){
     let top = 0;
