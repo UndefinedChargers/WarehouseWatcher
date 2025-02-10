@@ -7,14 +7,13 @@
 // https://doc.babylonjs.com/communityExtensions/Babylon.js+ExternalLibraries/BabylonJS_and_Vue/BabylonJS_and_Vue_1#vue-3
 
 import * as BABYLON from "@babylonjs/core";
-import * as GUI from "@babylonjs/gui"
 import "@babylonjs/loaders"
 import { Camera } from '@/scenemodules/camera';
-import { warehouseSceneConfig } from "@/configs/ww-config";
-import { useEnvTopicStore } from '@/stores/envTopicStore';
+import { warehouseSceneConfig, inventory_data} from "@/configs/ww-config";
 import { GuiPanel } from "@/scenemodules/panel";
 import { EnvironmentSensor } from "@/scenemodules/envsensor";
 import { sensor_object } from "@/configs/ww-config";
+import { useAppStateStore } from "@/stores/appStateStore";
 
 
 export class WarehouseScene {
@@ -39,7 +38,9 @@ export class WarehouseScene {
   private async _main(): Promise<void> {
     await this.LoadModels();
     this._CreatePickingRay();
-    new GuiPanel();
+    const panel = new GuiPanel();
+    panel.buildDetails(inventory_data);
+
     let envSensors = [];
     sensor_object.forEach((obj) => envSensors.push(new EnvironmentSensor(this, obj.meshname)));
     
@@ -82,23 +83,29 @@ export class WarehouseScene {
 
   //
   //
-  //
+  // https://forum.babylonjs.com/t/double-click-for-an-event-rather-than-pointerdown/30907
   private _CreatePickingRay(): void {
+
+    var hl = new BABYLON.HighlightLayer("h1", this.scene);
     this.scene.onPointerObservable.add((pointerInfo) => {
       switch (pointerInfo.type) {
         case BABYLON.PointerEventTypes.POINTERDOUBLETAP:
           if (pointerInfo.pickInfo.hit) {
             if (pointerInfo.event.button === 0) {
               if (pointerInfo.pickInfo.hit) {
-                var pickedmesh = pointerInfo.pickInfo.pickedMesh.name;
-                // console.log(pickedmesh);
-                this._MoveCamera(pickedmesh);
+                var pickedmesh = pointerInfo.pickInfo.pickedMesh;
+                console.log(pickedmesh.name);
+                // check appStateStore.js and call panel.buildDetails
+                hl.removeAllMeshes();
+                hl.addMesh(pickedmesh.subMeshes[0].getRenderingMesh(), new BABYLON.Color3(210, 180, 140));
+                hl.blurVerticalSize = 1.5;
+                hl.blurHorizontalSize = 1.5;
+                this._MoveCamera(pickedmesh.name);
               }
             }
           }
         }
       });
-
     // this.scene.onPointerUp = () => {
     //   const ray = this.scene.createPickingRay(this.scene.pointerX, this.scene.pointerY, BABYLON.Matrix.Identity(), this.camera, false);
     //   const hit = this.scene.pickWithRay(ray);
@@ -110,25 +117,22 @@ export class WarehouseScene {
     //   }
     //   console.log("position", this.camera._position);
     // };
-
   }
 
-  _MoveCamera(meshname: string): void {
+  _MoveCamera(meshname): void {
+    // console.log(mesh.name)
     var splitedname = meshname.split(/[_.]/) ;
     let targetmesh = this.scene.getMeshById(meshname);
     let excluded = warehouseSceneConfig.camera.exclude_obj.find(obj => obj === meshname);
-    console.log('splitedname',splitedname);
-    if (excluded !== null && excluded !== meshname && targetmesh !== null) {
+    // console.log(excluded);
+    if (excluded == undefined && targetmesh !== null) {
       var targetobject = warehouseSceneConfig.camera.target_obj.find(obj => obj.name === splitedname[0]);
-      console.log(excluded);
       this.camera._position = targetobject.position;
       this.camera.setTarget(targetmesh.absolutePosition); 
     }    
   }
 
-  //
-  //
-  //
+
   // DisplayGUI(meshname: string): void {
   //   const topic = "Waterloo/Warehouse/Thermostat/Room"
   //   const envstore = useEnvTopicStore();
