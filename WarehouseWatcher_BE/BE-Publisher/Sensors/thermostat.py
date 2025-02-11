@@ -107,6 +107,25 @@ class thermostat:
         else:
             return True
       
+     # function name:restart_sensor(self)
+    # Description:This function is used to provide us with the restart functionality in the case of battery being dead of a sensor
+    # Parameter:void:self
+    # return:Boolean
+
+    def restart_sensor(self):
+        if self.battery <= 0 or self.update_voltage() < self.min_voltage:
+           
+            # Reset sensor attributes
+            self.battery = 100
+            self.base_voltage = 4.0
+            self.base_signal_strength = 100
+            self.cycle_count = 0
+            self.sensor_id = str(uuid.uuid4())  # Generate a new sensor ID (simulating reboot)
+
+            print(f"{self.sensor_name} has restarted and is now operational again.")
+        else:
+            print(f"{self.sensor_name} is already running. No restart needed.")
+
 
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send

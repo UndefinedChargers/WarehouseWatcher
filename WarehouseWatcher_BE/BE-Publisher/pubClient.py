@@ -17,130 +17,32 @@ import os
  
 
 load_dotenv() # used for setting up the environment variable for the project
-# print(os.getenv("PATH"))
-# config = configparser.ConfigParser(interpolation=None)
-# config.read('config.ini')
- 
-# user = config.get('DEFAULT', 'UserName')
-# password = config.get('DEFAULT', 'Password')
-# host = config.get('DEFAULT', 'Host')
+
 
 user =os.getenv("user")
 password = os.getenv("password")
 host = os.getenv("host")
 
 TOPICS={
-    "temperature": "Waterloo/Warehouse/{sensor_name}/temperature",
-    "voltage": "Waterloo/Warehouse/{sensor_name}/voltage",
-    "battery": "Waterloo/Warehouse/{sensor_name}/battery",
-    "signal_strength": "Waterloo/Warehouse/{sensor_name}/signal_strength",
-    "data_message_guid": "Waterloo/Warehouse/{sensor_name}/MessageID",
-    "sensor_id":"Waterloo/Warehouse/{sensor_name}/sensor_id",
-    "message_date": "Waterloo/Warehouse/{sensor_name}/message_date",
-    "state": "Waterloo/Warehouse/{sensor_name}/state",
-    "signal_strength": "Waterloo/Warehouse/{sensor_name}/signal_strength",
-    "voltage": "Waterloo/Warehouse/{sensor_name}/voltage",
-    "battery": "Waterloo/Warehouse/{sensor_name}/battery",
-    "temperature": "Waterloo/Warehouse/{sensor_name}/temperature",
-    "display_temperature": "Waterloo/Warehouse/{sensor_name}/display_temperature",
-    "plot_temperature": "Waterloo/Warehouse/{sensor_name}/plot_temperature",
-    "met_notification_requirements": "Waterloo/Warehouse/{sensor_name}/met_notification_requirements",
-    "gateway_id": "Waterloo/Warehouse/{sensor_name}/gateway_id",
-    "data_values": "Waterloo/Warehouse/{sensor_name}/data_values",
-    "data_types": "Waterloo/Warehouse/{sensor_name}/data_types",
-    "plot_values": "Waterloo/Warehouse/{sensor_name}/plot_values",
-    "plot_labels": "Waterloo/Warehouse/{sensor_name}/plot_labels",
     "allsensor_data": "Waterloo/Warehouse/allsensor_data",
     "thermostat": "Waterloo/Warehouse/Thermostat/",
     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 
-    
 }
 
+# format for sensors
+# location :thermostat(sensor_name,temp_range,drain_cycle)
+# location: AirQualitySensor(sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
 sensors= {
-    #  "Room": thermostat("Room", (20.0, 25.0),20),
+    "Room": thermostat("Room", (20.0, 25.0),10),
     # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
-    "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
-    "AirQuality": AirQualitySensor("Warehouse_Air_Sensor", pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
+    # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20)
+
 }
-
-
 
 def on_publish(client, userdata, mid, reason_code, properties):
     print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
-
-# function name:publish_sensorData(client)
-# Description:This function  is used to publish all the sensor data as based on the topic and the key mapping 
-# Parameter:void:self
-# return:none
-def publish_sensorData(client):
-
-    key_mapping = {
-        "data_message_guid":"MessageID",
-        "sensor_id": "SensorID",
-        "message_date": "MessageDate",
-        "state": "State",
-        "signal_strength": "SignalStrength",
-        "voltage": "Voltage",
-        "battery": "Battery",
-        "temperature": "Data",
-        "display_temperature": "DisplayData",
-        "plot_temperature": "PlotValue",
-        "met_notification_requirements": "MetNotificationRequirements",
-        "gateway_id": "GatewayID",
-        "data_values": "DataValues",
-        "data_types": "DataTypes",
-        "plot_values": "PlotValues",
-        "plot_labels": "PlotLabels",
-       
-
-        
-    }
-
-    for sensor_name, sensor_instance in sensors.items():
-        data =  sensor_instance.generate_sensor_data()
-        if data is None:
-            print(f"{sensor_name} has shut down.")
-            continue
-
-        result = json.loads(data)["Result"][0]
-        for key, topic_template in TOPICS.items():
-            if key not in key_mapping:
-               continue
-            topic = topic_template.format(sensor_name=sensor_name)
-            mapped_key = key_mapping[key] 
-            # payload = result[mapped_key]
-            payload = result.get(mapped_key)
-            if payload is not None:
-                client.publish(topic, payload, qos=1)
-                print(f"Published to {topic}: {payload}")
-
-
-# function name:publish_all_sensorData(client)
-# Description:This function  is used to publish all the sensor data(maybe in  the future if we add motion sensor then it will include that too)
-# Parameter:void:self
-# return:none
-def publish_all_sensorData(client):
-   
-   allsensor_data=[]
-   
-   for sensor_name,Sensor_instance in sensors.items():
-      data=Sensor_instance.generate_sensor_data()
-      if data is None:
-         print(f"{sensor_name} has shut down")
-         continue
-      # we are parsing through the sensor data and appending it to the list
-      final_result=json.loads(data)["Result"][0]
-      sensor_Data={
-         "sensor_name":sensor_name,
-         "data":final_result
-      }
-      allsensor_data.append(sensor_Data)
-    #   print(allsensor_data)
-      topics=TOPICS["allsensor_data"]
-      payload=json.dumps(allsensor_data)
-      client.publish(topics,payload,qos=1)
-      print(f"Published all sensor data to {topics}:{payload}")
 
 
 # function name:publish_data(client)
@@ -148,10 +50,16 @@ def publish_all_sensorData(client):
 # Parameter:void:self
 # return:none
 def publish_data(client):
-   for sensor_name,thermostat_instance in sensors.items():
-      data=thermostat_instance.generate_sensor_data()
+   for sensor_name,sensor_instance in sensors.items():
+      data=sensor_instance.generate_sensor_data()
       if data is None:
-         print(f"{sensor_name} has shut down")
+         sensor_instance.restart_sensor()
+         if isinstance(sensor_instance, AirQualitySensor):# replace with a new AirQualitySensor
+                sensors[sensor_name] = AirQualitySensor(sensor_name)  
+         elif isinstance(sensor_instance, thermostat):
+                sensors[sensor_name] = thermostat(sensor_name, (2.0, 5.0), 150)  # Replace with new Thermostat instance
+
+      
          continue
 
       final_result=json.loads(data)["Result"][0]
@@ -160,10 +68,12 @@ def publish_data(client):
          "data":final_result
       }
 
-      theTopic=TOPICS["thermostat"] + sensor_name
+    #   theTopic=TOPICS["Thermostat"] + sensor_name
+      theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
       payload=json.dumps(sensor_Data)
       client.publish(theTopic, payload, qos=1)
       print(f"Published >> {theTopic}:{payload}")
+      print("=============================================================")
 
 
 
@@ -176,16 +86,9 @@ if __name__ == "__main__":
     client.connect(host, 8883)
     client.loop_start()
     try:
-        for i in range(1,4): # test code
-        # while TOPICS:
-            # publish_sensorData(client)
-            # if "allsensor_data" in TOPICS:
-            #    publish_all_sensorData(client)
-            # publish_data(client)
-            print("=============================================================")
-            publish_all_sensorData(client)
-            # publish_data(client)
-            print("=============================================================")
+        # for i in range(1,4): # test code
+        while TOPICS:
+            publish_data(client)
             time.sleep(3)
     except KeyboardInterrupt:
      print("Exiting...")
