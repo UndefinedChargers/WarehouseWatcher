@@ -24,7 +24,7 @@ password = os.getenv("HIVEMQ_PASS")
 host = os.getenv("HIVEMQ_HOST")
 
 TOPICS={
-    "allsensor_data": "Waterloo/Warehouse/allsensor_data",
+    # "allsensor_data": "Waterloo/Warehouse/allsensor_data",
     "thermostat": "Waterloo/Warehouse/Thermostat/",
     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 

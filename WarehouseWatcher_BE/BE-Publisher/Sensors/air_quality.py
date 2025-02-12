@@ -9,26 +9,14 @@ import uuid
 import time
 import json
 import datetime
+from Sensors.BaseSensor import BaseSensor
 
-class AirQualitySensor:
+class AirQualitySensor(BaseSensor):
     def __init__(self, sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100):
-        self.sensor_name = sensor_name
-        self.sensor_id = str(uuid.uuid4())
-        
-        # Measurement Ranges
+        super().__init__(sensor_name, drain_cycle)
         self.pm_range = pm_range
         self.co2_range = co2_range
         self.voc_range = voc_range
-
-        # Battery and Power
-        self.battery = 100
-        self.base_voltage = 4.0  
-        self.base_signal_strength = 100
-        self.min_voltage = 2.5
-        self.lowPower_threshold = 20
-        self.battery_drain_cycle =drain_cycle
-        self.drain_per_cycle = 100 / self.battery_drain_cycle
-        self.cycle_count = 0
 
     # function name: generate_pm(self)
     # Description: This function generates a simulated PM2.5 or PM10 value.
@@ -53,87 +41,6 @@ class AirQualitySensor:
     def generate_voc(self):
         return random.randint(*self.voc_range)
     
-
-     # function name: battery_updates(self)
-    # Description: This function simulates battery drain over time.
-    # Parameter: void:self
-    # return: float - Updated battery percentage
-    def battery_updates(self):
-        if self.battery <= 0:
-            print("Battery depleted. Sensor shutting down.")
-            return 0
-        self.cycle_count += 1
-        self.battery = max(0, self.battery - self.drain_per_cycle)
-        return round(self.battery, 2)
-    
-    # function name: update_voltage(self)
-    # Description: This function simulates voltage changes as the battery drains.
-    # Parameter: void:self
-    # return: float - Updated voltage value
-    def update_voltage(self):
-       
-        if self.battery <= 0:
-            return 0
-        self.base_voltage = max(self.min_voltage, 3.0 + (self.battery / 100 * 0.3))
-        return round(self.base_voltage, 2)
-
-
-    # function name: generate_signal_strength(self)
-    # Description: This function simulates network signal strength.
-    # Parameter: void:self
-    # return: int - Signal strength (range: 50-100)
-
-    def generate_signal_strength(self):
-        
-        if self.battery <= 0:
-            return 0
-        return max(50, random.randint(60, int(self.base_signal_strength)))
-
-    # function name: state(self)
-    # Description: This function determines the operational state of the sensor.
-    # Parameter: void:self
-    # return: int - 0 (Normal), 1 (Warning - Low Battery), 2 (Critical - Low Power)
-    def state(self):
-       
-        if self.battery <= 0 or self.update_voltage() <= self.min_voltage:
-            return 2  # Critical state
-        elif self.battery < 20:
-            return 1  # Warning state (low battery)
-        return 0  # Normal working state
-
-    # function name: notification_settings(self)
-    # Description: This function determines if a notification should be triggered.
-    # Parameter: void:self
-    # return: bool - True if in critical state, False otherwise
-    def notification_settings(self):
-        
-        return self.state() == 2
-   
-
-
-
-    # function name: restart_sensor(self)
-    # Description: This function resets the sensor to its initial state, making it operational again.
-    # Parameter: void:self
-    # return: None
-    def restart_sensor(self):
-        if self.battery <= 0 or self.update_voltage() < self.min_voltage:
-            print(f"{self.sensor_name} is restarting...")
-
-            # Reset sensor attributes
-            self.battery = 100
-            self.base_voltage = 4.0
-            self.base_signal_strength = 100
-            self.cycle_count = 0
-            self.sensor_id = str(uuid.uuid4())  # Generate a new sensor ID (simulating reboot)
-
-            print(f"{self.sensor_name} has restarted and is now operational again.")
-        else:
-            print(f"{self.sensor_name} is already running. No restart needed.")
-
-
-
-
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
     # Parameter:void:self
