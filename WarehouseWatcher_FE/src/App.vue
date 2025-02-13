@@ -27,7 +27,7 @@ onMounted(() => {
   <div>
     <AppBar />
   </div>
-  <div class="bg-black">
+  <div class="bg-black" id="rview">
     <RouterView />
   </div>
 </template>
@@ -40,6 +40,11 @@ header {
 .logo {
   display: block;
   margin: 0 auto 2rem;
+}
+
+.rview {
+  margin: 0px;
+  padding: 0px;
 }
 
 nav {

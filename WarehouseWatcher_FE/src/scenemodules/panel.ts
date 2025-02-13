@@ -5,8 +5,9 @@
 // DESCRIPTION: 
 // REFERENCE: https://playground.babylonjs.com/#4U4QH9#35
 
-import { AdvancedDynamicTexture, Image, Control, Rectangle, ScrollViewer, StackPanel, TextBlock } from "@babylonjs/gui"
+import { AdvancedDynamicTexture, Image, Control, Rectangle, ScrollViewer, StackPanel, TextBlock, Button } from "@babylonjs/gui"
 import { warehouseSceneConfig, inventory_data } from "@/configs/ww-config";
+// import { Button } from "@babylonjs/inspector/components/Button";
 
 export class GuiPanel {
   _container: StackPanel;
@@ -43,6 +44,10 @@ export class GuiPanel {
     panelContainer.addControl(this.space(0.003*window.innerWidth));
     panelContainer.addControl(this.textTitle("Inventory"));
     panelContainer.addControl(this.space(0.003*window.innerWidth));
+    // const title = this.buildTitle("Warehouse-Waterloo");
+    const title = this.getToggleButtons();
+    panelContainer.addControl(title);
+
 
     // panelUI.panel.panelContainer.StackPanel
     // const detailsContainer = new StackPanel();
@@ -50,6 +55,62 @@ export class GuiPanel {
     panelContainer.addControl(this._detailsContainer);
     
     // this.buildDetails(data);
+  }
+
+  getToggleButtons() {
+    const rect = new Rectangle();
+    rect.height = 0.0275 * window.innerWidth + "px";
+    rect.thickness = 0;
+    
+    const button1 = Button.CreateImageOnlyButton("button_commits", "./public/icons/rotate-right.svg");
+    button1.fontSize = 0.01 * window.innerWidth + "px";
+    button1.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    button1.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    button1.width = "45%";
+    button1.left = "5%";
+    button1.height = 0.016 * window.innerWidth + "px";
+    button1.thickness = 1;
+    button1.color = "grey";
+    button1.background = "#ffffff50";
+    rect.addControl(button1);
+    // Button Lines
+    const button2 = Button.CreateSimpleButton("button_lines", "Lines");
+    button2.fontSize = 0.01 * window.innerWidth + "px";
+    button2.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    button2.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    button2.width = "45%";
+    button2.left = "50%";
+    button2.height = 0.016 * window.innerWidth + "px";
+    button2.thickness = 1;
+    button2.color = "grey";
+    rect.addControl(button2);
+    // Bind callback
+    button1.onPointerClickObservable.add(function() {
+        button1.background = "#00ccf50";
+        button2.background = undefined;
+        // sortMethod = "c";
+        
+    });
+    button2.onPointerClickObservable.add(function() {
+        button2.background = "#00ccf50";
+        button1.background = undefined;
+        // sortMethod = "l";
+        
+    });
+    return rect;
+}
+
+
+  buildTitle(title: string){
+    const rect = new Rectangle();
+    // rect.height = 0.0275 * window.innerWidth + "px";
+    // rect.thickness = 0;
+    // rect.addControl(this.textTitle(title));
+    const reloadbtn = Button.CreateImageOnlyButton("rb", "./icons/rotate-right.svg");
+    reloadbtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    reloadbtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    rect.addControl(reloadbtn);
+    return rect;
   }
 
   buildDetails(data: object) {
