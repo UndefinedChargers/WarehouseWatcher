@@ -33,8 +33,7 @@ def store_data(topic, data):
     write_temperature_data(topic, sensor_data, sensor_name)
     
   elif topic == os.getenv("TOPIC_AIR_QUALITY"):
-    # write_air_quality_data(topic, sensor_data, sensor_name)
-    print("Air Quality received, ignored because it's not setup yet.")
+    write_air_quality_data(topic, sensor_data, sensor_name)
 
 # Function:     write_temperature_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -57,14 +56,8 @@ def write_temperature_data(topic, sensor_data, sensor_name):
         .field("gateway_id", sensor_data.get('GatewayID')) 
         .field("data_values", sensor_data.get('DataValues'))
         .field("data_types", sensor_data.get('DataTypes'))
-        .field("plot_value_1", sensor_data.get('PlotValue1'))
-        .field("plot_value_2", sensor_data.get('PlotValue2'))
-        .field("plot_value_3", sensor_data.get('PlotValue3'))
-        .field("plot_value_4", sensor_data.get('PlotValue4'))
-        .field("plot_label_1", sensor_data.get('PlotLabel1'))
-        .field("plot_label_2", sensor_data.get('PlotLabel2'))
-        .field("plot_label_3", sensor_data.get('PlotLabel3'))
-        .field("plot_label_4", sensor_data.get('PlotLabel4'))
+        .field("plot_values", sensor_data.get('PlotValues'))
+        .field("plot_labels", sensor_data.get('PlotLabels'))
     )
   client.write(database=database, record=point)
 
@@ -88,8 +81,14 @@ def write_air_quality_data(topic, sensor_data, sensor_name):
         .field("voc", sensor_data.get('VOC'))
         .field("met_notification_requirements", sensor_data.get('MetNotificationRequirements'))
         .field("gateway_id", sensor_data.get('GatewayID')) 
-        .field("data_types", sensor_data.get('DataTypes'))
-        .field("plot_labels", sensor_data.get('PlotLabels'))
+        .field("data_type_1", sensor_data.get('DataType1'))
+        .field("data_type_2", sensor_data.get('DataType2'))
+        .field("data_type_3", sensor_data.get('DataType3'))
+        .field("data_type_4", sensor_data.get('DataType4'))
+        .field("plot_label_1", sensor_data.get('PlotLabel1'))
+        .field("plot_label_2", sensor_data.get('PlotLabel2'))
+        .field("plot_label_3", sensor_data.get('PlotLabel3'))
+        .field("plot_label_4", sensor_data.get('PlotLabel4'))
     )
   client.write(database=database, record=point)
     
