@@ -19,14 +19,14 @@ class thermostat(BaseSensor):
     def __init__(self,sensor_name,temp_range,drain_cycle):
         super().__init__(sensor_name,drain_cycle)
         self.temp_range=temp_range
-        
+            
     # function name:temperataure_generater(self)
     # Description:This funciton is used to provide us with the temperature
     # Parameter:void:
     # return:int number:battery.
 
     def temperataure_generater(self):
-        return round(random.uniform(*self.temp_range), 1)
+        return round(random.uniform(*self.temp_range), 2)
     
         
     

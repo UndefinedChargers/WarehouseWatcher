@@ -14,6 +14,7 @@ from Sensors.BaseSensor import BaseSensor
 class AirQualitySensor(BaseSensor):
     def __init__(self, sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100):
         super().__init__(sensor_name, drain_cycle)
+        
         self.pm_range = pm_range
         self.co2_range = co2_range
         self.voc_range = voc_range
@@ -65,14 +66,25 @@ class AirQualitySensor(BaseSensor):
                     "SignalStrength": self.generate_signal_strength(),
                     "Voltage": voltage,
                     "Battery": battery,
+
                     "PM2.5": self.generate_pm(),
                     "PM10": self.generate_pm(),
                     "CO2": self.generate_co2(),
                     "VOC": self.generate_voc(),
+                    
                     "MetNotificationRequirements": self.notification_settings(),
                     "GatewayID": random.randint(100000, 999999),
-                    "DataTypes": ["PM2.5", "PM10", "CO2", "VOC"],
-                    "PlotLabels": ["ug/m3", "ug/m3", "ppm", "ppb"]
+                    # "DataTypes": ["PM2.5", "PM10", "CO2", "VOC"],
+                    # "PlotLabels": ["ug/m3", "ug/m3", "ppm", "ppb"]
+                    "DataType1": "PM2.5",
+                    "DataType2": "PM10",
+                    "DataType3": "CO2",
+                    "DataType4": "VOC",
+
+                    "PlotLabel1": "ug/m3",
+                    "PlotLabel2": "ug/m3",
+                    "PlotLabel3": "ppm",
+                    "PlotLabel4": "ppb"
                 }
             ]
         }

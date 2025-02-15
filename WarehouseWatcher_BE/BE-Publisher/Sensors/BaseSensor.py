@@ -91,7 +91,7 @@ class BaseSensor(ABC):
         else:
             return True
       
-     # function name:restart_sensor(self)
+    # function name:restart_sensor(self)
     # Description:This function is used to provide us with the restart functionality in the case of battery being dead of a sensor
     # Parameter:void:self
     # return:Boolean
