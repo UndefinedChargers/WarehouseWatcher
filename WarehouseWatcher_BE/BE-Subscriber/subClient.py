@@ -1,5 +1,5 @@
 # FILE : subClient.py
-# PROGRAMMER : Yujung Park
+# PROGRAMMER : Yujung Park and William
 # FIRST VERSION : 2024-10-20
 # DESCRIPTION : subClient.py connects to the host, subscribes to the topic, and prints the message from the topic on the console.
 # https://github.com/eclipse-paho/paho.mqtt.python
@@ -46,7 +46,9 @@ try:
 except Exception as e:
     print(f"client error: {e}")
 
-client.subscribe('Waterloo/Warehouse/Thermostat/#', qos=1)
+client.subscribe(os.getenv("TOPIC_ROOM"), qos=1)
+client.subscribe(os.getenv("TOPIC_AIR_QUALITY"), qos=1)
+client.subscribe(os.getenv("TOPIC_HUMIDITY"), qos=1)
 client.loop_start()
 
 try:
