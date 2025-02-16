@@ -46,8 +46,9 @@ try:
 except Exception as e:
     print(f"client error: {e}")
 
-client.subscribe('Waterloo/Warehouse/Room', qos=1)
-client.subscribe('Waterloo/Warehouse/AirQuality_warehouse', qos=1)
+client.subscribe(os.getenv("TOPIC_ROOM"), qos=1)
+client.subscribe(os.getenv("TOPIC_AIR_QUALITY"), qos=1)
+client.subscribe(os.getenv("TOPIC_HUMIDITY"), qos=1)
 client.loop_start()
 
 try:
