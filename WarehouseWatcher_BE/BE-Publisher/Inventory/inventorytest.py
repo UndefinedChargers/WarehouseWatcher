@@ -1,0 +1,15 @@
+INVENTORYTEST = [
+    {'id': 14, 'product_id': [7, '[Bora bipolar disector_152648_ghs07_s1.l01] WW-PD-J86'], 'quantity': 50.0}, 
+    {'id': 15, 'product_id': [8, '[JangGoon litesizer_759468_ghs01_s1.l02] WW-PD-X92 '], 'quantity': 47.0}, 
+    {'id': 17, 'product_id': [9, '[Jayuro ionQX_798435_ghs01_s1.l03] WW-PD-K78'], 'quantity': 37.0}, 
+    {'id': 35, 'product_id': [16, '[Cheollian spectrometer_645829_ghs07_s2.l01] WW-PD-A81'], 'quantity': 57.0}, 
+    {'id': 37, 'product_id': [17, '[Gangnam rigetti_799161_ghs01_s2.l05] WW-PD-G98'], 'quantity': 47.0}, 
+    {'id': 39, 'product_id': [19, '[Yangjae arqit_415777_ghs01_s2.l09] WW-PD-A72'], 'quantity': 50.0}, 
+    {'id': 30, 'product_id': [2, '[Yanghwa litesizerII_570468_ghs01_s2.l02] WW-PD-X31'], 'quantity': 44.0}, 
+    {'id': 31, 'product_id': [4, '[Cheongdam ionQX_978435_ghs01_s2.l03] WW-PD-K77'], 'quantity': 73.0}, 
+    {'id': 33, 'product_id': [6, '[Yeongdong molecular analyzer_488978_ghs02_s2.l04] WW-PD-B54'], 'quantity': 45.0}, 
+    {'id': 35, 'product_id': [16, '[Cheollian spectrometer_645829_ghs07_s2.l01] WW-PD-A81'], 'quantity': 57.0}, 
+    {'id': 37, 'product_id': [17, '[Gangnam rigetti_799161_ghs01_s2.l05] WW-PD-G98'], 'quantity': 47.0}, 
+    {'id': 39, 'product_id': [19, '[Yangjae arqit_415777_ghs01_s2.l09] WW-PD-A72'], 'quantity': 39.0}, 
+    {'id': 41, 'product_id': [20, '[Daecheong fediance_366892_ghs01_s2.l10] WW-PD-D90'], 'quantity': 56.0}, 
+    ]

@@ -35,8 +35,8 @@ TOPICS={
 # location: AirQualitySensor(sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
 sensors= {
     "Room": thermostat("Room", (20.0, 25.0),10),
-    # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
-    # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
+    "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
     "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20)
 
 }

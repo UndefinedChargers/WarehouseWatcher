@@ -2,7 +2,6 @@
 // DESCRIPTION: Reference https://github.com/mqttjs/MQTT.js
 
 import mqtt from 'mqtt';
-import { appStateStore } from '@/stores/appStateStoree';
 
 const pub_client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
     username: import.meta.env.VITE_MQTT_USER,
@@ -10,11 +9,15 @@ const pub_client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
 });
 
 export const publishMQTT = (topic, message) => {
-	pub_client.publish(topic, message, { qos: 1 }, { retain: true }, (err2) => {
+	let result;
+	pub_client.publish(topic, message, { qos: 1, retain: true }, (err2) => {
 		if (!err2) {
-			console.log(topic, message)
+			// console.log(topic, message)
+			result =  true
 		} else {
 			console.error(err2)
+			result = false
 		}
 	})
+	return result;
 };
