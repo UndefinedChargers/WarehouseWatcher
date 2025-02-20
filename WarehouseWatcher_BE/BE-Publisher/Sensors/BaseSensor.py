@@ -9,7 +9,8 @@ import time
 import json
 import datetime
 from abc import ABC,  abstractmethod
-
+from loguru import logger
+logger.add("./Logs/sensorLogs.log", rotation="100 MB", retention="10 days", compression="zip", level="INFO")
 class BaseSensor(ABC):
     def __init__(self,sensor_name,drain_cycle=100):
         self.sensor_name=sensor_name
@@ -23,6 +24,9 @@ class BaseSensor(ABC):
         self.drain_per_cycle = 100 / self.battery_drain_cycle
         self.cycle_count = 0
 
+
+        # logger.info(f"Initialized Sensor: {self.sensor_name} | ID: {self.sensor_id}")
+
     # function name:battery_updates()
     # Description:This function is used to simulate and  update the battey drain and life
     # Parameter:void:self
@@ -30,14 +34,15 @@ class BaseSensor(ABC):
 
     def battery_updates(self):
         if self.battery <= 0:
-            print("Battery depleted. Sensor shutting down.")
+            # print("Battery depleted. Sensor shutting down.")
+            logger.warning(f"{self.sensor_name} battery depleted. Sensor shutting down.")
             return 0
         self.cycle_count += 1
 
         adjusted_drain = self.drain_per_cycle  # Keep drain rate unchanged
         self.battery = max(0, self.battery - adjusted_drain)
-        print(f"Cycle {self.cycle_count}/{self.battery_drain_cycle}: Battery = {round(self.battery, 2)}%")
-
+        # print(f"Cycle {self.cycle_count}/{self.battery_drain_cycle}: Battery = {round(self.battery, 2)}%")
+        logger.info(f"{self.sensor_name} | Cycle {self.cycle_count}/{self.battery_drain_cycle} | Battery: {self.battery:.2f}%")
         return round(self.battery, 2)
 
     # function name:update_voltage(self)
@@ -106,9 +111,10 @@ class BaseSensor(ABC):
             self.cycle_count = 0
             self.sensor_id = str(uuid.uuid4())  # Generate a new sensor ID (simulating reboot)
 
-            print(f"{self.sensor_name} has restarted and is now operational again.")
+            # print(f"{self.sensor_name} has restarted and is now operational again.")
+            logger.info(f"{self.sensor_name} restarted with new ID: {self.sensor_id}")
         else:
-            print(f"{self.sensor_name} is already running. No restart needed.")
+            logger.info(f"{self.sensor_name} is operational. No restart needed.")
 
 
     @abstractmethod

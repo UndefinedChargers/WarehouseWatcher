@@ -13,10 +13,10 @@ import json
 from dotenv import load_dotenv
 from Sensors.air_quality import AirQualitySensor
 from Sensors.humidity import HumiditySensor
-
+from loguru import logger
 import os
  
-
+logger.add("./Logs/Publisher_Logs.log", rotation="100 MB", retention="10 days", compression="zip", level="INFO")
 load_dotenv() # used for setting up the environment variable for the project
 
 
@@ -25,7 +25,6 @@ password = os.getenv("HIVEMQ_PASS")
 host = os.getenv("HIVEMQ_HOST")
 
 TOPICS={
-    # "allsensor_data": "Waterloo/Warehouse/allsensor_data",
     "thermostat": "Waterloo/Warehouse/Thermostat/",
     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 
@@ -35,11 +34,11 @@ TOPICS={
 # location :thermostat(sensor_name,temp_range,drain_cycle)
 # location: AirQualitySensor(sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
 sensors= {
-    "Room": thermostat("Room", (20.0, 25.0),10),
-    # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
-    # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
-    "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20),
-    "humidity_sensor":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room", (20.0, 25.0),10), (20,90))
+    # "Room": thermostat("Warehouse_thermostat_Sensor", (20.0, 25.0),10),
+    # # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
+    # # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    # "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20),
+    "humidity_warehouse":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room", (20.0, 25.0),10), (20,90),2)
 
 }
 def on_publish(client, userdata, mid, reason_code, properties):
@@ -55,10 +54,10 @@ def publish_data(client):
       data=sensor_instance.generate_sensor_data()
       if data is None:
          sensor_instance.restart_sensor()
-         if isinstance(sensor_instance, AirQualitySensor):# replace with a new AirQualitySensor
-                sensors[sensor_name] = AirQualitySensor(sensor_name)  
-         elif isinstance(sensor_instance, thermostat):
-                sensors[sensor_name] = thermostat(sensor_name, (2.0, 5.0), 150)  # Replace with new Thermostat instance
+        #  if isinstance(sensor_instance, AirQualitySensor):# replace with a new AirQualitySensor
+        #         sensors[sensor_name] = AirQualitySensor(sensor_name)  
+        #  elif isinstance(sensor_instance, thermostat):
+        #         sensors[sensor_name] = thermostat(sensor_name, (2.0, 5.0), 150)  # Replace with new Thermostat instance
 
       
          continue

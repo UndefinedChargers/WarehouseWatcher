@@ -10,6 +10,7 @@ import time
 import json
 import datetime
 from Sensors.BaseSensor import BaseSensor
+from loguru import logger 
 
 class AirQualitySensor(BaseSensor):
     def __init__(self, sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100):
@@ -52,7 +53,8 @@ class AirQualitySensor(BaseSensor):
         voltage = self.update_voltage()
 
         if voltage < self.min_voltage:
-            print(f"{self.sensor_name} has shut down due to low voltage.")
+            # print(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.")
             return None  
 
         data_packets = {
@@ -88,5 +90,7 @@ class AirQualitySensor(BaseSensor):
                 }
             ]
         }
+        # logger.info(f"Generated AirQualitySensor data: {json.dumps(data_packets, indent=4)}")
+        logger.info(f"Generated AirQualitySensor data:")
         return json.dumps(data_packets, indent=4)
 
