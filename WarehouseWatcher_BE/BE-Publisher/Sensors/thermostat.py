@@ -20,6 +20,8 @@ class thermostat(BaseSensor):
     def __init__(self,sensor_name,temp_range,drain_cycle):
         super().__init__(sensor_name,drain_cycle)
         self.temp_range=temp_range
+
+        logger.info(f"ThermostatSensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
             
     # function name:temperataure_generater(self)
     # Description:This funciton is used to provide us with the temperature

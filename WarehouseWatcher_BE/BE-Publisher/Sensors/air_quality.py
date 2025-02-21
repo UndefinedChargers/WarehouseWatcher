@@ -19,6 +19,7 @@ class AirQualitySensor(BaseSensor):
         self.pm_range = pm_range
         self.co2_range = co2_range
         self.voc_range = voc_range
+        logger.info(f"AirQualitySensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
 
     # function name: generate_pm(self)
     # Description: This function generates a simulated PM2.5 or PM10 value.
