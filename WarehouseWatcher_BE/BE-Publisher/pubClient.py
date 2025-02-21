@@ -24,11 +24,11 @@ user =os.getenv("HIVEMQ_USER")
 password = os.getenv("HIVEMQ_PASS")
 host = os.getenv("HIVEMQ_HOST")
 
-TOPICS={
-    "thermostat": "Waterloo/Warehouse/Thermostat/",
-    "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
+# TOPICS={
+#     "thermostat": "Waterloo/Warehouse/Thermostat/",
+#     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 
-}
+# }
 
 # format for sensors
 # location :thermostat(sensor_name,temp_range,drain_cycle)
@@ -69,8 +69,14 @@ def publish_data(client):
       }
 
     #   theTopic=TOPICS["Thermostat"] + sensor_name
-      theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
-      payload=json.dumps(sensor_Data)
+    #   theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
+    #   payload=json.dumps(sensor_Data)
+    #   client.publish(theTopic, payload, qos=1)
+
+
+      sensor_type = sensor_instance.__class__.__name__ 
+      theTopic = f"Waterloo/Warehouse/{sensor_type}/{sensor_name}"
+      payload = json.dumps(sensor_Data)
       client.publish(theTopic, payload, qos=1)
       print(f"Published >> {theTopic}:{payload}")
       print("=============================================================")
@@ -87,7 +93,7 @@ if __name__ == "__main__":
     client.loop_start()
     try:
         # for i in range(1,4): # test code
-        while TOPICS:
+        while True:
             publish_data(client)
             time.sleep(3)
     except KeyboardInterrupt:
