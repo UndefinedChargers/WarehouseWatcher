@@ -10,6 +10,7 @@ import time
 import json
 import datetime
 from Sensors.BaseSensor import BaseSensor
+from loguru import logger 
 
 class AirQualitySensor(BaseSensor):
     def __init__(self, sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100):
@@ -18,6 +19,7 @@ class AirQualitySensor(BaseSensor):
         self.pm_range = pm_range
         self.co2_range = co2_range
         self.voc_range = voc_range
+        logger.info(f"AirQualitySensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
 
     # function name: generate_pm(self)
     # Description: This function generates a simulated PM2.5 or PM10 value.
@@ -52,7 +54,8 @@ class AirQualitySensor(BaseSensor):
         voltage = self.update_voltage()
 
         if voltage < self.min_voltage:
-            print(f"{self.sensor_name} has shut down due to low voltage.")
+            # print(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         data_packets = {
@@ -88,5 +91,7 @@ class AirQualitySensor(BaseSensor):
                 }
             ]
         }
+        # logger.info(f"Generated AirQualitySensor data: {json.dumps(data_packets, indent=4)}")
+        logger.info(f"Generated AirQualitySensor data:",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets, indent=4)
 

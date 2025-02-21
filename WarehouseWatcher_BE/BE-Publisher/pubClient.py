@@ -13,10 +13,10 @@ import json
 from dotenv import load_dotenv
 from Sensors.air_quality import AirQualitySensor
 from Sensors.humidity import HumiditySensor
-
+from loguru import logger
 import os
  
-
+logger.add("./Logs/Publisher_Logs.log", rotation="100 MB", retention="10 days", compression="zip", level="INFO")
 load_dotenv() # used for setting up the environment variable for the project
 
 
@@ -24,27 +24,26 @@ user =os.getenv("HIVEMQ_USER")
 password = os.getenv("HIVEMQ_PASS")
 host = os.getenv("HIVEMQ_HOST")
 
-TOPICS={
-    # "allsensor_data": "Waterloo/Warehouse/allsensor_data",
-    "thermostat": "Waterloo/Warehouse/Thermostat/",
-    "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
+# TOPICS={
+#     "thermostat": "Waterloo/Warehouse/Thermostat/",
+#     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
 
-}
+# }
 
 # format for sensors
 # location :thermostat(sensor_name,temp_range,drain_cycle)
 # location: AirQualitySensor(sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
 sensors= {
-    "Room": thermostat("Room", (20.0, 25.0),10),
-    # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
-    # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    "Room": thermostat("Warehouse_thermostat_Sensor", (20.0, 25.0),10),
+    # # "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
+    # # "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
     "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20),
-    "humidity_sensor":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room", (20.0, 25.0),10), (20,90))
+    "humidity_warehouse":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room", (20.0, 25.0),10), (20,90),2)
 
 }
 def on_publish(client, userdata, mid, reason_code, properties):
-    print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
-
+    #print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
+    logger.info(f"Message published. MID: {mid}, Reason Code: {reason_code}",file="./Logs/Publisher_Logs.log")
 
 # function name:publish_data(client)
 # Description:This function  is used to publish all the sensor data(maybe in  the future if we add motion sensor then it will include that too)
@@ -55,12 +54,6 @@ def publish_data(client):
       data=sensor_instance.generate_sensor_data()
       if data is None:
          sensor_instance.restart_sensor()
-         if isinstance(sensor_instance, AirQualitySensor):# replace with a new AirQualitySensor
-                sensors[sensor_name] = AirQualitySensor(sensor_name)  
-         elif isinstance(sensor_instance, thermostat):
-                sensors[sensor_name] = thermostat(sensor_name, (2.0, 5.0), 150)  # Replace with new Thermostat instance
-
-      
          continue
 
       final_result=json.loads(data)["Result"][0]
@@ -70,11 +63,18 @@ def publish_data(client):
       }
 
     #   theTopic=TOPICS["Thermostat"] + sensor_name
-      theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
-      payload=json.dumps(sensor_Data)
+    #   theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
+    #   payload=json.dumps(sensor_Data)
+    #   client.publish(theTopic, payload, qos=1)
+
+
+      sensor_type = sensor_instance.__class__.__name__ 
+      theTopic = f"Waterloo/Warehouse/{sensor_type}/{sensor_name}"
+      payload = json.dumps(sensor_Data)
       client.publish(theTopic, payload, qos=1)
-      print(f"Published >> {theTopic}:{payload}")
-      print("=============================================================")
+    #   print(f"Published >> {theTopic}:{payload}")
+      logger.info(f"Published >>{theTopic}",file="./Logs/Publisher_Logs.log")
+      
 
 
 
@@ -88,11 +88,12 @@ if __name__ == "__main__":
     client.loop_start()
     try:
         # for i in range(1,4): # test code
-        while TOPICS:
+        while True:
             publish_data(client)
             time.sleep(3)
     except KeyboardInterrupt:
-     print("Exiting...")
+    #  print("Exiting...")
+     logger.info("Exiting the service",file="./Logs/Publisher_Logs.log")
     finally:
      client.loop_stop()  
      client.disconnect()  # Disconnect the client

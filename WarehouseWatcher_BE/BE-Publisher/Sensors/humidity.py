@@ -10,6 +10,7 @@ import time
 import json
 import datetime
 from Sensors.BaseSensor import BaseSensor
+from loguru import logger
 
 class HumiditySensor(BaseSensor):
     def __init__(self, sensor_name, thermostat_sensor, humidity_range=(20, 90), drain_cycle=100):
@@ -22,6 +23,9 @@ class HumiditySensor(BaseSensor):
             raise ValueError("humidity_range must be a tuple/list of exactly two numeric values.")
 
         self.thermostat_sensor = thermostat_sensor  # Link to thermostat sensor
+
+        logger.info(f"HumiditySensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
+
 
     # function name: generate_humidity(self)
     # Description: This function generates a simulated humidity value within the given range.
@@ -57,7 +61,8 @@ class HumiditySensor(BaseSensor):
         voltage = self.update_voltage()
         
         if voltage < self.min_voltage:
-            print(f"{self.sensor_name} has shut down due to low voltage.")
+            # print(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         humidity = self.generate_humidity()
@@ -105,4 +110,6 @@ class HumiditySensor(BaseSensor):
                 }
             ]
         }
+        # logger.info(f"Generated HumiditySensor data: {json.dumps(data_packet, indent=4)}")
+        logger.info(f"Generated HumiditySensor data:",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets, indent=4)

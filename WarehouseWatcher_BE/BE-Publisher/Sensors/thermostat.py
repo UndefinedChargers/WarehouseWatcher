@@ -11,6 +11,7 @@ import time
 import json
 import datetime
 from Sensors.BaseSensor import BaseSensor
+from loguru import logger
 
 
 class thermostat(BaseSensor):
@@ -19,6 +20,8 @@ class thermostat(BaseSensor):
     def __init__(self,sensor_name,temp_range,drain_cycle):
         super().__init__(sensor_name,drain_cycle)
         self.temp_range=temp_range
+
+        logger.info(f"ThermostatSensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
             
     # function name:temperataure_generater(self)
     # Description:This funciton is used to provide us with the temperature
@@ -41,7 +44,8 @@ class thermostat(BaseSensor):
         voltage = self.update_voltage()
 
         if voltage < self.min_voltage:
-            print(f"{self.sensor_name} has shut down due to low voltage.")
+            # print(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         temperature = self.temperataure_generater()
@@ -72,6 +76,7 @@ class thermostat(BaseSensor):
                 }
             ]
         }
+        logger.info("Generated Thermostat data",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets)
     
    
