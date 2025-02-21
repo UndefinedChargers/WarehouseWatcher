@@ -35,14 +35,14 @@ class BaseSensor(ABC):
     def battery_updates(self):
         if self.battery <= 0:
             # print("Battery depleted. Sensor shutting down.")
-            logger.warning(f"{self.sensor_name} battery depleted. Sensor shutting down.")
+            logger.warning(f"{self.sensor_name} battery depleted. Sensor shutting down.",file="./Logs/sensorLogs.log")
             return 0
         self.cycle_count += 1
 
         adjusted_drain = self.drain_per_cycle  # Keep drain rate unchanged
         self.battery = max(0, self.battery - adjusted_drain)
         # print(f"Cycle {self.cycle_count}/{self.battery_drain_cycle}: Battery = {round(self.battery, 2)}%")
-        logger.info(f"{self.sensor_name} | Cycle {self.cycle_count}/{self.battery_drain_cycle} | Battery: {self.battery:.2f}%")
+        logger.info(f"{self.sensor_name} | Cycle {self.cycle_count}/{self.battery_drain_cycle} | Battery: {self.battery:.2f}%",file="./Logs/sensorLogs.log")
         return round(self.battery, 2)
 
     # function name:update_voltage(self)
@@ -112,9 +112,9 @@ class BaseSensor(ABC):
             self.sensor_id = str(uuid.uuid4())  # Generate a new sensor ID (simulating reboot)
 
             # print(f"{self.sensor_name} has restarted and is now operational again.")
-            logger.info(f"{self.sensor_name} restarted with new ID: {self.sensor_id}")
+            logger.info(f"{self.sensor_name} restarted with new ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
         else:
-            logger.info(f"{self.sensor_name} is operational. No restart needed.")
+            logger.info(f"{self.sensor_name} is operational. No restart needed.",file="./Logs/sensorLogs.log")
 
 
     @abstractmethod

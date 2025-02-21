@@ -43,7 +43,7 @@ class thermostat(BaseSensor):
 
         if voltage < self.min_voltage:
             # print(f"{self.sensor_name} has shut down due to low voltage.")
-            logger.warning(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         temperature = self.temperataure_generater()
@@ -74,7 +74,7 @@ class thermostat(BaseSensor):
                 }
             ]
         }
-        logger.info("Generated Thermostat data")
+        logger.info("Generated Thermostat data",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets)
     
    

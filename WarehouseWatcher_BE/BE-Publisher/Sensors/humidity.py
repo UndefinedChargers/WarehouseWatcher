@@ -24,7 +24,7 @@ class HumiditySensor(BaseSensor):
 
         self.thermostat_sensor = thermostat_sensor  # Link to thermostat sensor
 
-        logger.info(f"HumiditySensor initialized: {self.sensor_name} | ID: {self.sensor_id}")
+        logger.info(f"HumiditySensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
 
 
     # function name: generate_humidity(self)
@@ -62,7 +62,7 @@ class HumiditySensor(BaseSensor):
         
         if voltage < self.min_voltage:
             # print(f"{self.sensor_name} has shut down due to low voltage.")
-            logger.warning(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         humidity = self.generate_humidity()
@@ -111,5 +111,5 @@ class HumiditySensor(BaseSensor):
             ]
         }
         # logger.info(f"Generated HumiditySensor data: {json.dumps(data_packet, indent=4)}")
-        logger.info(f"Generated HumiditySensor data:")
+        logger.info(f"Generated HumiditySensor data:",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets, indent=4)

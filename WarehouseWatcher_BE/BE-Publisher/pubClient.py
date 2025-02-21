@@ -42,8 +42,8 @@ sensors= {
 
 }
 def on_publish(client, userdata, mid, reason_code, properties):
-    print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
-
+    #print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
+    logger.info(f"Message published. MID: {mid}, Reason Code: {reason_code}",file="./Logs/Publisher_Logs.log")
 
 # function name:publish_data(client)
 # Description:This function  is used to publish all the sensor data(maybe in  the future if we add motion sensor then it will include that too)
@@ -54,12 +54,6 @@ def publish_data(client):
       data=sensor_instance.generate_sensor_data()
       if data is None:
          sensor_instance.restart_sensor()
-        #  if isinstance(sensor_instance, AirQualitySensor):# replace with a new AirQualitySensor
-        #         sensors[sensor_name] = AirQualitySensor(sensor_name)  
-        #  elif isinstance(sensor_instance, thermostat):
-        #         sensors[sensor_name] = thermostat(sensor_name, (2.0, 5.0), 150)  # Replace with new Thermostat instance
-
-      
          continue
 
       final_result=json.loads(data)["Result"][0]
@@ -78,8 +72,9 @@ def publish_data(client):
       theTopic = f"Waterloo/Warehouse/{sensor_type}/{sensor_name}"
       payload = json.dumps(sensor_Data)
       client.publish(theTopic, payload, qos=1)
-      print(f"Published >> {theTopic}:{payload}")
-      print("=============================================================")
+    #   print(f"Published >> {theTopic}:{payload}")
+      logger.info(f"Published >>{theTopic}",file="./Logs/Publisher_Logs.log")
+      
 
 
 
@@ -97,7 +92,8 @@ if __name__ == "__main__":
             publish_data(client)
             time.sleep(3)
     except KeyboardInterrupt:
-     print("Exiting...")
+    #  print("Exiting...")
+     logger.info("Exiting the service",file="./Logs/Publisher_Logs.log")
     finally:
      client.loop_stop()  
      client.disconnect()  # Disconnect the client

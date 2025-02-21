@@ -54,7 +54,7 @@ class AirQualitySensor(BaseSensor):
 
         if voltage < self.min_voltage:
             # print(f"{self.sensor_name} has shut down due to low voltage.")
-            logger.warning(f"{self.sensor_name} has shut down due to low voltage.")
+            logger.warning(f"{self.sensor_name} has shut down due to low voltage.",file="./Logs/sensorLogs.log")
             return None  
 
         data_packets = {
@@ -91,6 +91,6 @@ class AirQualitySensor(BaseSensor):
             ]
         }
         # logger.info(f"Generated AirQualitySensor data: {json.dumps(data_packets, indent=4)}")
-        logger.info(f"Generated AirQualitySensor data:")
+        logger.info(f"Generated AirQualitySensor data:",file="./Logs/sensorLogs.log")
         return json.dumps(data_packets, indent=4)
 
