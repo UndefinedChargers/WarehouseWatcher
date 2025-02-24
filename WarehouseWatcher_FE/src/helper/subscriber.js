@@ -8,6 +8,8 @@
 
 import mqtt from 'mqtt';
 import { useEnvTopicStore } from '@/stores/envTopicStore';
+import { useInventoryStore } from '@/stores/inventoryStore';
+import { useAppStatusStore } from '@/stores/appStatusStore';
 
 export const subscribeMQTT = () => {
     const client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
@@ -25,12 +27,22 @@ export const subscribeMQTT = () => {
     
     client.on('message', function (topic, message) {
         // console.log('Received message:', topic, message.toString());
-        // store the object
         const obj = JSON.parse(message);
-        const envStore = useEnvTopicStore();
-        envStore.setTopicData(topic, obj);
-        const topicdata = envStore.individualTopicData(topic)?.data.Data;
-        console.log("individualTopicData", topicdata);
+        // console.log(topic);
+        if (topic.includes("Inventory")) {
+            const invStore = useInventoryStore();
+            invStore.setInvTopicData(topic, obj);
+            const obj1 = invStore.getLocationInventory(topic);
+            // console.log(obj1[0].quantity);
+        } else if (topic.includes("Status")) {
+            const statusStore = useAppStatusStore();
+            statusStore.inventory_reload(true);
+        } else {
+            const envStore = useEnvTopicStore();
+            envStore.setTopicData(topic, obj);
+        }
+
+
     });
     
     client.subscribe('#');

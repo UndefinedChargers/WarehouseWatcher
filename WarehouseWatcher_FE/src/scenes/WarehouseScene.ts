@@ -13,7 +13,8 @@ import { warehouseSceneConfig, inventory_data} from "@/configs/ww-config";
 import { GuiPanel } from "@/scenemodules/panel";
 import { EnvironmentSensor } from "@/scenemodules/envsensor";
 import { sensor_object } from "@/configs/ww-config";
-import { useAppStateStore } from "@/stores/appStateStore";
+import { useAppStatusStore } from "@/stores/appStatusStore";
+import { useInventoryStore } from "@/stores/inventoryStore";
 
 
 export class WarehouseScene {
@@ -37,21 +38,19 @@ export class WarehouseScene {
 
   private async _main(): Promise<void> {
     await this.LoadModels();
-    this._CreatePickingRay();
     const panel = new GuiPanel();
-    panel.buildDetails(inventory_data);
+    this._CreatePickingRay(panel);
+    // panel.buildDetails(inventory_data);
 
     let envSensors = [];
     sensor_object.forEach((obj) => envSensors.push(new EnvironmentSensor(this, obj.meshname)));
     
     this.engine.runRenderLoop(() => {
+      this.engine.resize();
       this.scene.render();
     });
   }
 
-  //
-  //
-  //
   CreateScene(): BABYLON.Scene {
     this.engine.displayLoadingUI();
 
@@ -69,9 +68,6 @@ export class WarehouseScene {
     return scene;
   }
   
-  //
-  //
-  //
   async LoadModels(): Promise<void> {
     const { meshes } = await BABYLON.SceneLoader.ImportMeshAsync(
       "",
@@ -81,11 +77,8 @@ export class WarehouseScene {
     this.engine.hideLoadingUI();
   }
 
-  //
-  //
   // https://forum.babylonjs.com/t/double-click-for-an-event-rather-than-pointerdown/30907
-  private _CreatePickingRay(): void {
-
+  private _CreatePickingRay(guipanel: GuiPanel): void {
     var hl = new BABYLON.HighlightLayer("h1", this.scene);
     this.scene.onPointerObservable.add((pointerInfo) => {
       switch (pointerInfo.type) {
@@ -95,28 +88,35 @@ export class WarehouseScene {
               if (pointerInfo.pickInfo.hit) {
                 var pickedmesh = pointerInfo.pickInfo.pickedMesh;
                 console.log(pickedmesh.name);
-                // check appStateStore.js and call panel.buildDetails
                 hl.removeAllMeshes();
                 hl.addMesh(pickedmesh.subMeshes[0].getRenderingMesh(), new BABYLON.Color3(210, 180, 140));
                 hl.blurVerticalSize = 1.5;
                 hl.blurHorizontalSize = 1.5;
                 this._MoveCamera(pickedmesh.name);
+
+                const statusStore = useAppStatusStore();
+                const inventoryStore = useInventoryStore();
+                statusStore.setTargetObject(pickedmesh.name);
+                
+                // shelf only
+                if (pickedmesh.name.includes("shelf")) {
+                  const BASE = "WW/Waterloo/Warehouse/Inventory/"
+                  var location = pickedmesh.name.split(/[.\/_]/);
+                  let a = location[0].replace("helf", "");
+                  let b = location[1].at(0);
+                  let c = location[2].slice(1);
+                  let loc = a.concat(".", b).concat(c);
+                  console.log(BASE+loc);
+
+                  const locationdata = inventoryStore.getLocationInventory(BASE+loc);
+                  // console.log(locationdata);
+                  guipanel.buildDetails(locationdata);
+                }
               }
             }
-          }
-        }
-      });
-    // this.scene.onPointerUp = () => {
-    //   const ray = this.scene.createPickingRay(this.scene.pointerX, this.scene.pointerY, BABYLON.Matrix.Identity(), this.camera, false);
-    //   const hit = this.scene.pickWithRay(ray);
-      
-    //   if (hit.pickedMesh !== null)
-    //   {
-    //     console.log("meshname", hit.pickedMesh.name);
-    //     this._MoveCamera(hit.pickedMesh.name);
-    //   }
-    //   console.log("position", this.camera._position);
-    // };
+         }
+      }
+    });
   }
 
   _MoveCamera(meshname): void {
@@ -131,36 +131,4 @@ export class WarehouseScene {
       this.camera.setTarget(targetmesh.absolutePosition); 
     }    
   }
-
-
-  // DisplayGUI(meshname: string): void {
-  //   const topic = "Waterloo/Warehouse/Thermostat/Room"
-  //   const envstore = useEnvTopicStore();
-  //   let topicdata = envstore.individualTopicData(topic)?.data.Data;
-  //   var mesh = this.scene.getMeshById(meshname);
-
-  //   // 3D
-  //   var manager = new GUI.GUI3DManager(this.scene);
-  //   var button = new GUI.Button3D("button");
-  //   manager.addControl(button);
-  //   // button.linkToTransformNode(this.scene.getMeshById("SHELF1"));
-  //   button.linkToTransformNode(mesh);
-  //   button.scaling.set (8, 1, 8);
-  //   button.node!.rotation.y += Math.PI*0.5;
-  //   // console.log(mesh.position.x, mesh.position.y, mesh.position.z);
-  //   button.position.y = 1.8;
-  
-  //   var text1 = new GUI.TextBlock();
-  //   text1.text = topicdata;
-  //   text1.color = "white";
-  //   text1.fontSize = 50;
-  //   button.content = text1;
-
-  //   button.onPointerUpObservable.add(function(){
-  //     // change this with visible later
-  //     button.dispose();
-  //     text1.dispose();
-  //   })
-  // }
-
 }

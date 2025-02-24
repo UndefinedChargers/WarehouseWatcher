@@ -1,10 +1,4 @@
-# FILE : pubClient.py
-# PROGRAMMER : Yujung Park
-# DESCRIPTION : pubClient.py connects to the host, creates a random value between 24 and 30 and makes the mock thermostat temperature message and publishes the message on the topic.
-# https://github.com/eclipse-paho/paho.mqtt.python
 
-import paho.mqtt.client as paho
-import time
 import random
 from paho.mqtt.enums import CallbackAPIVersion
 import configparser
@@ -97,4 +91,3 @@ if __name__ == "__main__":
     finally:
      client.loop_stop()  
      client.disconnect()  # Disconnect the client
-

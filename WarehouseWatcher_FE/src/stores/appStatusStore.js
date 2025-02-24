@@ -7,18 +7,24 @@
 
 import { defineStore } from 'pinia'
 
-export const useAppStateStore = defineStore('appDataStore', {
+export const useAppStatusStore = defineStore('appStatusDataStore', {
   state: () => ({
-      targetObject: undefined,
+      targetObject: String,
+      inventory_reload: Boolean,
   }),
   
   getters: {
-    
+    getTargetObject: (state) => {
+      return targetObject;
+    },
   },
 
   actions: {
     setTargetObject (meshname) {
       this.targetObject = meshname;
+    },
+    setInventoryReload (status) {
+      this.inventory_reload = status;
     },
   },
 })
