@@ -4,9 +4,14 @@ TheScene._isVue = true;
 </script>
 
 <template>
-    <div>
+    <div class="scene-view">
         <TheScene />
     </div>
 </template>
 
+<style>
+.scene-view {
+    height: 100%;
+}
+</style>
 

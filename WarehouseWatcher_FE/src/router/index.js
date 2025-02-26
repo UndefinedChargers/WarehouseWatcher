@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import SpaceView from '../views/SpaceView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import SpaceView from '../views/SpaceView.vue'
+import ReportView from '../views/ComplianceView.vue'
 import AboutView from '../views/AboutView.vue'
 
 const router = createRouter({
@@ -24,13 +25,14 @@ const router = createRouter({
     },
     {
       path: '/compliance',
-      name: '',
-      component: AboutView,
+      name: 'compliance',
+      component: ReportView,
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      component: AboutView,
+      // component: () => import('../views/AboutView.vue'),
     },
   ],
 })
