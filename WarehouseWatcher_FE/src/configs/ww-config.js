@@ -120,7 +120,7 @@ export const sensor_object = [{
     topic: "Waterloo/Warehouse/HumiditySensor/humidity_warehouse",
     targetval: "data",
     targetvalmem: "Humidity",
-    unit: '&',
+    unit: '%',
     min_threshold: 40,
     max_threshold: 50,
     color_good: new Color3(0, 0, 1),
