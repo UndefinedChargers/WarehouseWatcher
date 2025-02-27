@@ -26,9 +26,9 @@ ERP_PASSWORD = os.getenv("ERP_PASSWORD")
 inventory_topic = 'WW/Waterloo/Warehouse/Inventory/'
 status_topic = 'WW/App/Front/Status'
 inventorydata = defaultdict(list)
-theclient = client = paho.Client(callback_api_version=CallbackAPIVersion.VERSION2)
+client = paho.Client(callback_api_version=CallbackAPIVersion.VERSION2)
 logger.add(sys.stdout, format="{time} {level} --- {message}")
-logger.add('wwlog.log', serialize=True, rotation='250 MB')
+logger.add('wwlog.log', rotation='100 MB', retention=1, level="INFO")
 
 @dataclass
 class Product:
@@ -45,10 +45,6 @@ class Product:
 def get_inventory():
   common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(ERP_URL))
   uid = common.authenticate(ERP_DB, EPR_USERNAME, ERP_PASSWORD, {})
-  # if uid:
-  #   logger.info("authentication success")
-  # else:
-  #   logger.error("authentication failed")
 
   models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(ERP_URL))
   search_result = models.execute_kw(ERP_DB, uid, ERP_PASSWORD, 'stock.quant', 'search_read', [[['on_hand', '=', True]]], {'fields': ['product_id', 'quantity', ], 'limit': 100})

@@ -60,6 +60,9 @@ export class EnvironmentSensor {
       if (sensorobj.targetvalmem === "Data") {
         topicdata = envstore.individualTopicData(sensorobj.topic)?.data.Data;
       }
+      if (sensorobj.targetvalmem === "Humidity") {
+        topicdata = envstore.individualTopicData(sensorobj.topic)?.data.Humidity;
+      }
       if (sensorobj.targetvalmem === "CO2") {
         topicdata = envstore.individualTopicData(sensorobj.topic)?.data.CO2;
       }
@@ -86,6 +89,9 @@ export class EnvironmentSensor {
     let topicdata = undefined;
     if (sensorobj.targetvalmem === "Data") {
       topicdata = envstore.individualTopicData(sensorobj.topic)?.data.Data;
+    }
+    if (sensorobj.targetvalmem === "Humidity") {
+      topicdata = envstore.individualTopicData(sensorobj.topic)?.data.Humidity;
     }
     if (sensorobj.targetvalmem === "CO2") {
       topicdata = envstore.individualTopicData(sensorobj.topic)?.data.CO2;

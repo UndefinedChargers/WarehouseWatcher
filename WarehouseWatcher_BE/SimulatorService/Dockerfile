@@ -1,18 +1,10 @@
+FROM python:3.13-slim
 
-FROM python:3.13
+WORKDIR /code
+ 
+COPY ./requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Set working directory inside the container
-WORKDIR /app
+COPY ./src ./src
 
-# Copy project files into the container
-COPY pubClient.py ./
-COPY Sensors/ ./Sensors/
-# COPY .env ./
-
-# To install the dependencies
-RUN pip install --no-cache-dir paho-mqtt python-dotenv loguru
-
-# Ensure Logs directory exists
-RUN mkdir -p ./Logs
-
-CMD ["python", "pubClient.py"]
+CMD ["python", "src/main.py"]
