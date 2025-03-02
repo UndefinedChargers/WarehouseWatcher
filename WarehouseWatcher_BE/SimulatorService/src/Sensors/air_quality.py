@@ -62,7 +62,7 @@ class AirQualitySensor(BaseSensor):
             "Method": "SensorMessage",
             "Result": [
                 {
-                    "MessageID": str(uuid.uuid4()),
+                    "MessageID":str(uuid.uuid4()),
                     "SensorID": self.sensor_id,
                     "MessageDate": datetime.datetime.now().isoformat(),
                     "State": self.state(),
@@ -77,8 +77,6 @@ class AirQualitySensor(BaseSensor):
                     
                     "MetNotificationRequirements": self.notification_settings(),
                     "GatewayID": random.randint(100000, 999999),
-                    # "DataTypes": ["PM2.5", "PM10", "CO2", "VOC"],
-                    # "PlotLabels": ["ug/m3", "ug/m3", "ppm", "ppb"]
                     "DataType1": "PM2.5",
                     "DataType2": "PM10",
                     "DataType3": "CO2",
