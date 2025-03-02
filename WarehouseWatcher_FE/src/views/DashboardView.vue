@@ -1,9 +1,11 @@
+<script setup>
+    import Dashboards from '@/components/Dashboards.vue'
+</script>
+
 <template>
-    <div class="dashboard">
-<!-- 
-    <h1>Dashboard View</h1>
--->
-    </div>
+    <main>
+        <Dashboards />
+    </main>
 </template>
   
 <style>
