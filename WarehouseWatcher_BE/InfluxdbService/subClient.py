@@ -24,7 +24,7 @@ def on_subscribe(client, userdata, mid, granted_qos, properties=None):
     
 
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))    
+    # print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))    
 
     try:
         json_data = json.loads(msg.payload.decode())
@@ -46,7 +46,9 @@ try:
 except Exception as e:
     print(f"client error: {e}")
 
-client.subscribe(os.getenv("TOPIC_ROOM"), qos=1)
+client.subscribe(os.getenv("TOPIC_THERMOSTAT_ROOM"), qos=1)
+client.subscribe(os.getenv("TOPIC_THERMOSTAT_REFRIGERATOR"), qos=1)
+client.subscribe(os.getenv("TOPIC_THERMOSTAT_FREEZER"), qos=1)
 client.subscribe(os.getenv("TOPIC_AIR_QUALITY"), qos=1)
 client.subscribe(os.getenv("TOPIC_HUMIDITY"), qos=1)
 client.loop_start()

@@ -24,12 +24,12 @@ client = InfluxDBClient3(host=host, token=token, org=org)
 # Description:  Separates the sensor_name and the JSON data. 
 #               Determines which topic it is and calls the topic-specific write function.
 def store_data(topic, data):
-  print("Parsing JSON data.")
+  print("Parsing JSON data. Topic: " + topic)
 
   sensor_name = data.get('sensor_name') 
   sensor_data = data.get('data', {})
 
-  if topic == os.getenv("TOPIC_ROOM"):
+  if topic == os.getenv("TOPIC_THERMOSTAT_ROOM") or topic == os.getenv("TOPIC_THERMOSTAT_REFRIGERATOR") or topic == os.getenv("TOPIC_THERMOSTAT_FREEZER"):
     write_temperature_data(topic, sensor_data, sensor_name)
     
   elif topic == os.getenv("TOPIC_AIR_QUALITY"):
@@ -64,6 +64,7 @@ def write_temperature_data(topic, sensor_data, sensor_name):
         .field("plot_labels", sensor_data.get('PlotLabels'))
     )
   client.write(database=database, record=point)
+  print("Writing to influxDB: " + topic)
 
 # Function:     write_air_quality_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -95,6 +96,7 @@ def write_air_quality_data(topic, sensor_data, sensor_name):
         .field("plot_label_4", sensor_data.get('PlotLabel4'))
     )
   client.write(database=database, record=point)
+  print("Writing to influxDB: " + topic)
 
 # Function:     write_humidity_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -127,5 +129,6 @@ def write_humidity_data(topic, sensor_data, sensor_name):
         .field("plot_label_air_weight", sensor_data.get('PlotLabel_AirWeight'))
     )
   client.write(database=database, record=point)
+  print("Writing to influxDB: " + topic)
     
 
