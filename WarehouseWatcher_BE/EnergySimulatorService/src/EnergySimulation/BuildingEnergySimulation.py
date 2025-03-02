@@ -4,8 +4,8 @@
 # FIRST VERSION : 
 # DESCRIPTION :This basically the code for BuildingEnergySimulation
 
-from Base_simulation import BaseSimulation
-from BuildingConfigration import BuildingConfiguration
+from EnergySimulation.Base_simulation import BaseSimulation
+from EnergySimulation.BuildingConfigration import BuildingConfiguration
 
 class BuildingEnergySimulation(BaseSimulation):
   

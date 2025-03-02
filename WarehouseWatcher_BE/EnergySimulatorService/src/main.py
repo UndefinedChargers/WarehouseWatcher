@@ -7,9 +7,10 @@ from loguru import logger
 import paho.mqtt.client as paho
 from paho.mqtt.enums import CallbackAPIVersion
 
-from Base_simulation import BaseSimulation
-from BuildingConfigration import BuildingConfiguration
-from BuildingEnergySimulation import BuildingEnergySimulation
+
+from EnergySimulation.Base_simulation import BaseSimulation
+from EnergySimulation.BuildingConfigration import BuildingConfiguration
+from EnergySimulation.BuildingEnergySimulation import BuildingEnergySimulation
 
 logger.add("./Logs/EnergySimulator_Publisher_Logs.log",rotation="100 MB",retention="2 days",compression="zip",level="INFO")
 
@@ -102,7 +103,7 @@ def main():
             for sim in simulations:
                 sim_data = sim.update_simulation()
                 publish_energy_data(client, sim_data)
-            time.sleep(3)
+            time.sleep(1200)
 
     except KeyboardInterrupt:
         logger.info("Exiting multi-building Energysimulation",file="./Logs/EnergySimulator_Publisher_Logs.log")
