@@ -36,7 +36,7 @@ def publish_energy_data(client, data):
         "consumption_kW": data["IT_energy"]
     }
     client.publish(it_topic, json.dumps(it_payload), qos=1)
-    logger.info(f"Published IT -> {it_topic}: {it_payload}")
+    logger.info(f"Published IT -> {it_topic}")
 
     # Lighting
     light_topic = f"Waterloo/Warehouse/{building_id}/Energy/Lighting"
@@ -46,7 +46,7 @@ def publish_energy_data(client, data):
         "consumption_kW": data["Lighting_energy"]
     }
     client.publish(light_topic, json.dumps(light_payload), qos=1)
-    logger.info(f"Published Lighting -> {light_topic}: {light_payload}")
+    logger.info(f"Published Lighting -> {light_topic}")
 
     # Ventilation
     vent_topic = f"Waterloo/Warehouse/{building_id}/Energy/Ventilation"
@@ -56,7 +56,7 @@ def publish_energy_data(client, data):
         "consumption_kW": data["Ventilation_energy"]
     }
     client.publish(vent_topic, json.dumps(vent_payload), qos=1)
-    logger.info(f"Published Ventilation -> {vent_topic}: {vent_payload}")
+    logger.info(f"Published Ventilation -> {vent_topic}")
 
     # HVAC
     hvac_topic = f"Waterloo/Warehouse/{building_id}/Energy/HVAC"
@@ -66,7 +66,7 @@ def publish_energy_data(client, data):
         "consumption_kW": data["HVAC_energy"]
     }
     client.publish(hvac_topic, json.dumps(hvac_payload), qos=1)
-    logger.info(f"Published HVAC -> {hvac_topic}: {hvac_payload}")
+    logger.info(f"Published HVAC -> {hvac_topic}")
 
     # Transport
     transport_topic = f"Waterloo/Warehouse/{building_id}/Energy/Transport"
@@ -76,7 +76,7 @@ def publish_energy_data(client, data):
         "consumption_kW": data["Transport_energy"]
     }
     client.publish(transport_topic, json.dumps(transport_payload), qos=1)
-    logger.info(f"Published Transport -> {transport_topic}: {transport_payload}")
+    logger.info(f"Published Transport -> {transport_topic}")
 
 def main():
     # MQTT setup
