@@ -1,12 +1,12 @@
 <script setup>
-import TheDrawer from '@/components/TheDrawer.vue';
+import DrawerReport from '@/components/DrawerReport.vue';
 import ReportArea from '@/components/ReportArea.vue';
 </script>
 
 <template>
   <div class="compliance-main">
     <div class="side-bar">
-      <TheDrawer />
+      <DrawerReport />
     </div>
     <div class="report-page">
       <ReportArea />

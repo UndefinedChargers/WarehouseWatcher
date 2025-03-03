@@ -1,8 +1,9 @@
 <script>
+
 </script>
 
 <template>
-  <div>Report Area</div>
+  <h3>Report</h3>
 </template>
 
 <style scoped>
