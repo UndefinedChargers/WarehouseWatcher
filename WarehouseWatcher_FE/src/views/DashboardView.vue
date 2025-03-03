@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <main>
+    <main class="dashboard">
         <Dashboards />
     </main>
 </template>
@@ -14,6 +14,9 @@
         min-height: 100vh;
         display: flex;
         align-items: center;
+        justify-content: center; /* Center content */
+        flex-direction: column; /* Stack elements */
+        text-align: center; /* Align text */
     }
 }
 </style>
