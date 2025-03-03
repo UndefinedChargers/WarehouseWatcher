@@ -19,5 +19,9 @@ export const grafana_dashboards = {
         {   name: "CO2 Last 2 Days", 
             link: "http://172.206.30.225:3000/d/eeeftzn77slq8c/co2-last-2-days?orgId=2&from=now-2d&to=now&timezone=browser&viewPanel=panel-1" 
         }
-    ]
+    ],
+    energy: {
+        name: "Energy Consumption Last 2 Days",
+        link: "http://172.206.30.225:3000/d/beerjk87fqw3kc/energy-consumption?orgId=2&from=now-2d&to=now&timezone=browser&viewPanel=panel-1"
+    }
   };

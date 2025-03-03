@@ -29,6 +29,20 @@ def store_data(topic, data):
   sensor_name = data.get('sensor_name') 
   sensor_data = data.get('data', {})
 
+  print("Storing: " + topic)
+
+  if  (topic == os.getenv('TOPIC_BUILDING_A_IT') or 
+      topic == os.getenv('TOPIC_BUILDING_A_LIGHTING') or 
+      topic == os.getenv('TOPIC_BUILDING_A_VENTILATION') or 
+      topic == os.getenv('TOPIC_BUILDING_A_HVAC') or 
+      topic == os.getenv('TOPIC_BUILDING_A_TRANSPORT') or 
+      topic == os.getenv('TOPIC_BUILDING_B_IT') or 
+      topic == os.getenv('TOPIC_BUILDING_B_LIGHTING') or 
+      topic == os.getenv('TOPIC_BUILDING_B_VENTILATION') or 
+      topic == os.getenv('TOPIC_BUILDING_B_HVAC') or 
+      topic == os.getenv('TOPIC_BUILDING_B_TRANSPORT')):
+    write_building_energy_data(topic, data)
+  
   if topic == os.getenv("TOPIC_THERMOSTAT_ROOM") or topic == os.getenv("TOPIC_THERMOSTAT_REFRIGERATOR") or topic == os.getenv("TOPIC_THERMOSTAT_FREEZER"):
     write_temperature_data(topic, sensor_data, sensor_name)
     
@@ -38,6 +52,19 @@ def store_data(topic, data):
   elif topic == os.getenv("TOPIC_HUMIDITY"):
     write_humidity_data(topic, sensor_data, sensor_name)
 
+
+# Function:     write_building_energy_data
+# Description:  Parses building energy data, creates an influxDB point, and writes to the database.
+#               Parsing and point construction is specific to building energy data.
+def write_building_energy_data(topic, data):
+  point = (
+    Point(topic) 
+      .tag("building_id", data.get('building_id'))
+      .field("occupant_count", data.get('occupant_count'))
+      .field("consumption_kW", data.get('consumption_kW'))
+  )
+  client.write(database=database, record=point)
+  #print("Writing to influxDB: " + topic)
   
 # Function:     write_temperature_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -64,7 +91,7 @@ def write_temperature_data(topic, sensor_data, sensor_name):
         .field("plot_labels", sensor_data.get('PlotLabels'))
     )
   client.write(database=database, record=point)
-  print("Writing to influxDB: " + topic)
+  #print("Writing to influxDB: " + topic)
 
 # Function:     write_air_quality_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -96,7 +123,7 @@ def write_air_quality_data(topic, sensor_data, sensor_name):
         .field("plot_label_4", sensor_data.get('PlotLabel4'))
     )
   client.write(database=database, record=point)
-  print("Writing to influxDB: " + topic)
+  #print("Writing to influxDB: " + topic)
 
 # Function:     write_humidity_data
 # Description:  Parses sensor_data, creates an influxDB point, and writes to the database.
@@ -129,6 +156,6 @@ def write_humidity_data(topic, sensor_data, sensor_name):
         .field("plot_label_air_weight", sensor_data.get('PlotLabel_AirWeight'))
     )
   client.write(database=database, record=point)
-  print("Writing to influxDB: " + topic)
+  #print("Writing to influxDB: " + topic)
     
 
