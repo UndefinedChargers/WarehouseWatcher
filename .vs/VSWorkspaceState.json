@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\WarehouseWatcher_BE",
+    "\\WarehouseWatcher_FE",
+    "\\WarehouseWatcher_FE\\public",
+    "\\WarehouseWatcher_FE\\src",
+    "\\WarehouseWatcher_FE\\src\\configs"
+  ],
+  "SelectedNode": "\\WarehouseWatcher_FE\\src\\configs\\grafana-config.js",
+  "PreviewInSolutionExplorer": false
+}
