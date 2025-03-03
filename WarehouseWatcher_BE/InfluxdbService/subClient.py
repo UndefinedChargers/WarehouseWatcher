@@ -26,6 +26,8 @@ def on_subscribe(client, userdata, mid, granted_qos, properties=None):
 def on_message(client, userdata, msg):
     # print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))    
 
+    print("Received: " + msg.topic)
+
     try:
         json_data = json.loads(msg.payload.decode())
         influxClient.store_data(msg.topic, json_data)
@@ -51,6 +53,19 @@ client.subscribe(os.getenv("TOPIC_THERMOSTAT_REFRIGERATOR"), qos=1)
 client.subscribe(os.getenv("TOPIC_THERMOSTAT_FREEZER"), qos=1)
 client.subscribe(os.getenv("TOPIC_AIR_QUALITY"), qos=1)
 client.subscribe(os.getenv("TOPIC_HUMIDITY"), qos=1)
+
+client.subscribe(os.getenv("TOPIC_BUILDING_A_IT"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_A_LIGHTING"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_A_VENTILATION"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_A_HVAC"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_A_TRANSPORT"), qos=1)
+
+client.subscribe(os.getenv("TOPIC_BUILDING_B_IT"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_B_LIGHTING"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_B_VENTILATION"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_B_HVAC"), qos=1)
+client.subscribe(os.getenv("TOPIC_BUILDING_B_TRANSPORT"), qos=1)
+
 client.loop_start()
 
 try:
