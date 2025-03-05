@@ -25,7 +25,10 @@
         Space
       </v-btn>
       <v-btn @click="$router.push({path:'/compliance'})">
-        Compliance
+        Report
+      </v-btn>
+      <v-btn @click="$router.push({path:'/admin'})">
+        Admin
       </v-btn>
       <v-btn class="text-none" stacked>
         <v-badge color="error" content="2">

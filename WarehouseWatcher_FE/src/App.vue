@@ -4,11 +4,17 @@ import AppBar from './components/AppBar.vue';
 import { onMounted } from 'vue';
 import { subscribeMQTT } from'./helper/subscriber';
 import { publishMQTT } from'./helper/publisher';
-import { warehouseSceneConfig } from './configs/ww-config';
+import { sensor_object } from './configs/ww-config';
+import { useAppConfigsStore } from "@/stores/appConfigsStore";
 
 
 onMounted(() => {
   subscribeMQTT()
+  const configsStore = useAppConfigsStore();
+  for (const [key, value] of Object.entries(sensor_object)) {
+    configsStore.setObjectConfigs(value.meshname, value);
+  }
+  console.log(configsStore.individualObjectConfig("sensor1_temp"));
 })
 
 </script>
