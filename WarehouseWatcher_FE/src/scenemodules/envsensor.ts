@@ -1,9 +1,15 @@
+// FILE: panel.ts
+// PROJECT: Warehouse Watcher
+// PROGRAMMER: Undefined Chargers - Yujung Park
+// FIRST VERSION: 2025-01-30
+
 import { Scene } from "@babylonjs/core";
 import { useEnvTopicStore } from '@/stores/envTopicStore';
 import { ActionManager, AbstractMesh, Color3, ExecuteCodeAction, StandardMaterial, GlowLayer } from "@babylonjs/core";
 import { AdvancedDynamicTexture, Image, Control, Rectangle, ScrollViewer, StackPanel, TextBlock } from "@babylonjs/gui"
-import { sensor_object } from "@/configs/ww-config";
+// import { sensor_object } from "@/configs/ww-config";
 import { WarehouseScene } from "@/scenes/WarehouseScene";
+import { useAppConfigsStore } from "@/stores/appConfigsStore";
 
 // mesh name and its topic
 export class EnvironmentSensor {
@@ -18,9 +24,11 @@ export class EnvironmentSensor {
   
   CreateEnvironmentSensor(): void {
     const envstore = useEnvTopicStore();
-    const index = sensor_object.findIndex(sensor => sensor.meshname === this._sensor)
+    const objectConfigStore = useAppConfigsStore();
+    const sensorobj = objectConfigStore.individualObjectConfig(this._sensor)
+    // const index = sensor_object.findIndex(sensor => sensor.meshname === this._sensor)
     // console.log(sensor_object[index].topic);
-    let sensorobj = sensor_object[index];
+    // let sensorobj = sensor_object[index];
     const sensor = this._scene.getMeshById(this._sensor);
     var sensor_material = new StandardMaterial("mat", this._scene);
     // var hl = new BABYLON.HighlightLayer("hl", this.scene);    
@@ -83,8 +91,11 @@ export class EnvironmentSensor {
   
   DisplayEnvironmentSensor(sensor: AbstractMesh | null, material: StandardMaterial): void {
     const envstore = useEnvTopicStore();
-    const index = sensor_object.findIndex(sensor => sensor.meshname === this._sensor)
-    let sensorobj = sensor_object[index];
+    const objectConfigStore = useAppConfigsStore();
+    const sensorobj = objectConfigStore.individualObjectConfig(this._sensor)
+    // console.log(this._sensor, sensorobj.max_threshold);
+    // const index = sensor_object.findIndex(sensor => sensor.meshname === this._sensor)
+    // let sensorobj = sensor_object[index];
 
     let topicdata = undefined;
     if (sensorobj.targetvalmem === "Data") {

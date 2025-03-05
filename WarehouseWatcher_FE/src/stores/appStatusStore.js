@@ -4,7 +4,6 @@
 // FIRST VERSION: 2025-01-10
 // DESCRIPTION:
 
-
 import { defineStore } from 'pinia'
 
 export const useAppStatusStore = defineStore('appStatusDataStore', {

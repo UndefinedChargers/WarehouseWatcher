@@ -4,6 +4,7 @@ import DashboardView from '../views/DashboardView.vue'
 import SpaceView from '../views/SpaceView.vue'
 import ReportView from '../views/ComplianceView.vue'
 import AboutView from '../views/AboutView.vue'
+import AdminView from '../views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       name: 'about',
       component: AboutView,
       // component: () => import('../views/AboutView.vue'),
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
     },
   ],
 })
