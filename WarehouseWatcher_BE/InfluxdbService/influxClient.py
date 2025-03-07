@@ -16,7 +16,7 @@ load_dotenv()
 token = os.getenv("INFLUXDB_TOKEN")
 org = os.getenv("INFLUXDB_ORG")
 host = os.getenv("INFLUXDB_HOST")
-database = "setup_test"
+database = os.getenv("INFLUXDB_BUCKET")
 
 client = InfluxDBClient3(host=host, token=token, org=org)
 
