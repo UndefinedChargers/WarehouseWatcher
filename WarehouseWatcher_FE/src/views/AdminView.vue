@@ -12,8 +12,15 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
 <template>
   <div class="admin-container">
     <aside class="side-bar">
-      <!-- Sidebar content (e.g., navigation, filters) can go here -->
-      <p>Admin Panel</p>
+      <h2>Admin Panel</h2>
+      <nav>
+        <ul>
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Reports</a></li>
+          <li><a href="#">Threshold Settings</a></li>
+          <li><a href="#">Logs</a></li>
+        </ul>
+      </nav>
     </aside>
 
     <main class="report-page">
@@ -30,17 +37,51 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
   background-color: #f4f4f4;
 }
 
+/* Sidebar Styling */
 .side-bar {
   position: fixed;
   left: 0;
-  height: calc(100% - 64px);
-  top: 64px;
+  top: 0;
   width: 280px;
+  height: 100%;
   background: #2c3e50;
   color: white;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
+.side-bar h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+nav ul li {
+  margin: 10px 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+nav ul li a:hover {
+  background: #34495e;
+}
+
+/* Main Content */
 .report-page {
   flex: 1;
   margin-left: 280px; /* Matches sidebar width */
@@ -50,5 +91,28 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
 
 h1 {
   margin-bottom: 15px;
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+  .side-bar {
+    width: 220px;
+  }
+
+  .report-page {
+    margin-left: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .side-bar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .report-page {
+    margin-left: 0;
+  }
 }
 </style>

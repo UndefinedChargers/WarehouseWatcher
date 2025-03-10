@@ -1,34 +1,66 @@
-<script setup>
-import { ref } from "vue";
+<!-- 
+ FILE: AdminThreshold.vue
+ PROJECT: Warehouse Watcher
+ PROGRAMMER: Undefined Chargers - Aryan Passi
+ FIRST VERSION: 2025-03-09
+ -->
+ 
+ <script setup>
+import { ref, onMounted } from "vue";
 import { useAppConfigsStore } from "@/stores/appConfigsStore";
 
 const objectConfig = useAppConfigsStore();
 
-// Warehouse Watcher sensors with min/max thresholds
+// Warehouse Watcher sensors with default min/max thresholds
 const thresholds = ref([
-  { id: "temperature", name: "Temperature", min_member: "min_threshold", max_member: "max_threshold", min_value: 10, max_value: 50, min: 15, max: 40 },
-  { id: "humidity", name: "Humidity", min_member: "min_threshold", max_member: "max_threshold", min_value: 20, max_value: 80, min: 30, max: 70 },
-  { id: "air_quality", name: "Air Quality", min_member: "min_threshold", max_member: "max_threshold", min_value: 50, max_value: 300, min: 60, max: 250 },
+  { id: "temperature", name: "Temperature", min_member: "min_threshold", max_member: "max_threshold", min_value: 15, max_value: 40, min: 10, max: 50 },
+  { id: "humidity", name: "Humidity", min_member: "min_threshold", max_member: "max_threshold", min_value: 30, max_value: 70, min: 20, max: 80 },
+  { id: "air_quality", name: "Air Quality", min_member: "min_threshold", max_member: "max_threshold", min_value: 60, max_value: 250, min: 50, max: 300 },
 ]);
 
-// Update function for both min and max thresholds
+// Load saved thresholds from store (or API)
+const loadSavedThresholds = () => {
+  thresholds.value.forEach(sensor => {
+    const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
+    const savedMax = objectConfig.getObjectMemberValue(sensor.id, sensor.max_member);
+
+    if (savedMin !== undefined) sensor.min_value = savedMin;
+    if (savedMax !== undefined) sensor.max_value = savedMax;
+  });
+};
+
+// Update single threshold
 const updateConfigs = (sensor, type) => {
   const value = type === "min" ? sensor.min_value : sensor.max_value;
   const member = type === "min" ? sensor.min_member : sensor.max_member;
 
-  // Ensure values stay within limits
+  // Ensure min is always less than max
   if (sensor.min_value >= sensor.max_value) {
-    alert("Min value cannot be greater than or equal to Max value!");
+    alert("Min threshold cannot be greater than or equal to Max threshold!");
     return;
   }
 
   objectConfig.setObjectMemberValue(sensor.id, member, value);
 };
+
+// Save all thresholds at once
+const saveAllThresholds = () => {
+  thresholds.value.forEach(sensor => {
+    objectConfig.setObjectMemberValue(sensor.id, sensor.min_member, sensor.min_value);
+    objectConfig.setObjectMemberValue(sensor.id, sensor.max_member, sensor.max_value);
+  });
+  alert("All thresholds have been saved successfully!");
+};
+
+// Load saved values when component mounts
+onMounted(() => {
+  loadSavedThresholds();
+});
 </script>
 
 <template>
   <div class="threshold-container">
-    <h2>Threshold Sensor Configurations</h2>
+    <h2>Sensor Threshold Configuration</h2>
     <div class="threshold-list">
       <div v-for="sensor in thresholds" :key="sensor.id" class="threshold-item">
         <div class="sensor-info">
@@ -58,6 +90,7 @@ const updateConfigs = (sensor, type) => {
         </div>
       </div>
     </div>
+    <button class="save-btn" @click="saveAllThresholds">Save All Thresholds</button>
   </div>
 </template>
 
@@ -139,5 +172,15 @@ button {
 
 button:hover {
   background: #0056b3;
+}
+
+.save-btn {
+  margin-top: 20px;
+  background: #28a745;
+  padding: 10px 15px;
+}
+
+.save-btn:hover {
+  background: #218838;
 }
 </style>
