@@ -1,40 +1,54 @@
 <!-- 
  FILE: AdminView.vue
  PROJECT: Warehouse Watcher
- PROGRAMMER: Undefined Chargers - Yujung Park
+ PROGRAMMER: Undefined Chargers - Yujung Park, Aryan Passi
  FIRST VERSION: 2025-03-05
- DESCRIPTION:
- -->
+ DESCRIPTION: Admin panel for threshold configuration
+-->
 <script setup>
 import AdminThreshold from '@/components/AdminThreshold.vue';
 </script>
 
 <template>
-  <div class="compliance-main">
-    <div class="report-page">
+  <div class="admin-container">
+    <aside class="side-bar">
+      <!-- Sidebar content (e.g., navigation, filters) can go here -->
+      <p>Admin Panel</p>
+    </aside>
+
+    <main class="report-page">
+      <h1>Threshold Settings</h1>
       <AdminThreshold />
-    </div>
+    </main>
   </div>
 </template>
 
-<style>
-  .compliance-main {
-    height: 100%;
-    display: grid;
-  }
-  .side-bar {
-    left: 0pxz;
-    position: fixed;
-    height: calc(100% -64px);
-    top: 64px;
-    bottom: 0;
-    width: 300px;
-  }
-  .report-page {
-    height: 100%;
-    padding-left: 300px;
-    padding-right: 25px;
-    padding-top: 20px;
-    padding-bottom: 32px;
-  }
+<style scoped>
+.admin-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.side-bar {
+  position: fixed;
+  left: 0;
+  height: calc(100% - 64px);
+  top: 64px;
+  width: 280px;
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+}
+
+.report-page {
+  flex: 1;
+  margin-left: 280px; /* Matches sidebar width */
+  padding: 20px;
+  overflow-y: auto;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
 </style>
