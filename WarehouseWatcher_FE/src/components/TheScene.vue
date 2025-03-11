@@ -4,7 +4,7 @@
   
 <script lang="ts">
 import { defineComponent } from 'vue';
-import {WarehouseScene} from "@/scenes/WarehouseScene"
+import { WarehouseScene } from "@/scenes/WarehouseScene"
 
 export default defineComponent({
   name: 'BabylonExamples',

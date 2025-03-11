@@ -31,15 +31,39 @@
         Admin
       </v-btn>
       <v-btn class="text-none" stacked>
-        <v-badge color="error" content="2">
+        <v-badge color="error" :content="alert" @click="overlay = !overlay">
           <v-icon>mdi-bell-outline</v-icon>
         </v-badge>
       </v-btn>
     </v-app-bar>
   </v-layout>
+
+  <v-overlay class="alert-container" activator="parent" location-strategy="connected" scroll-strategy="block">
+    <v-card class="mx-auto alert-card" prepend-icon="mdi-bell">
+      <template v-slot:title>
+        <span class="font-weight-black">Alerts</span>
+    </template>
+    <v-card-text class="bg-surface-light pt-4">
+      <ul>
+        <li v-for = "alert in alerts">
+          {{ alert[1].timestamp }} : {{ alert[1].alert_object }} - {{ alert[1].alert_type }}
+          <!-- {{ key.timestamp }} : {{ key.alert_object }} - {{ key.alert_type }} -->
+        </li>
+      </ul>
+    </v-card-text>
+    </v-card>
+  </v-overlay>
 </template>
 
-<script>
+<script setup>
+import { useAppConfigsStore } from "@/stores/appConfigsStore";
+import { mapState } from "pinia";
+import { computed } from "vue";
+
+const appNotification = useAppConfigsStore()
+const alerts = appNotification.notifications
+const alert = computed(() => appNotification.notifications.size) 
+console.log(alerts)
 
 </script>
 
@@ -61,5 +85,19 @@
   width:60px;
   height:50px;
   padding-left: 10px;
+}
+
+.alert-container {
+  width: 300px;
+  height: 500px;
+  
+}
+
+.alert-card {
+  width: 270px;
+  height: 470px;
+  float: right;
+  margin: 15px;
+  padding: 10px;
 }
 </style>
