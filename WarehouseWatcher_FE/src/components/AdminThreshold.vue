@@ -2,7 +2,7 @@
 import { useAppConfigsStore } from "@/stores/appConfigsStore";
 let obj = "sensor1_temp";
 let member = "min_threshold";
-let value = 22;
+let value = 18;
 const objectConfig = useAppConfigsStore();
 const updateConfigs = () => {
 	objectConfig.setObjectMemberValue(obj, member, value)
