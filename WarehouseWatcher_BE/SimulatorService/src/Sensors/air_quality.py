@@ -15,7 +15,9 @@ from loguru import logger
 class AirQualitySensor(BaseSensor):
     def __init__(self, sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100):
         super().__init__(sensor_name, drain_cycle)
-        
+        self.setCO2=400 # set the value of the Co2
+        self.setPm25=10 # set the value for PM2.5
+        self.setVOC=200
         self.pm_range = pm_range
         self.co2_range = co2_range
         self.voc_range = voc_range
@@ -27,7 +29,8 @@ class AirQualitySensor(BaseSensor):
     # return: float - Simulated PM value
     def generate_pm(self):
        
-        return round(random.uniform(*self.pm_range), 1)
+        # return round(random.uniform(*self.pm_range), 1)
+        return self.setPm25
     
     # function name: generate_co2(self)
     # Description: This function generates a simulated CO2 concentration.
@@ -35,14 +38,15 @@ class AirQualitySensor(BaseSensor):
     # return: int - Simulated CO2 concentration in ppm
     def generate_co2(self):
         
-        return random.randint(*self.co2_range)
+        return self.setCO2
 
      # function name: generate_voc(self)
     # Description: This function generates a simulated VOC level.
     # Parameter: void:self
     # return: int - Simulated VOC concentration in ppb
     def generate_voc(self):
-        return random.randint(*self.voc_range)
+        # return random.randint(*self.voc_range)
+        self.setVOC
     
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
