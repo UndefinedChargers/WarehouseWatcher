@@ -1,15 +1,17 @@
 <script setup>
 import TheDrawer from '@/components/TheDrawer.vue';
-import ReportArea from '@/components/ReportArea.vue';
+import ReportSelect from '@/components/ReportSelect.vue';
+import ReportList from '@/components/ReportList.vue';
 </script>
 
 <template>
   <div class="compliance-main">
-    <div class="side-bar">
+    <!-- <div class="side-bar">
       <TheDrawer />
-    </div>
+    </div> -->
     <div class="report-page">
-      <ReportArea />
+      <ReportSelect />
+      <ReportList />
     </div>
   </div>
 </template>
@@ -17,22 +19,22 @@ import ReportArea from '@/components/ReportArea.vue';
 <style>
   .compliance-main {
     height: 100%;
-    display: grid;
+    /* display: grid; */
 
   }
-  .side-bar {
+  /* .side-bar {
     left: 0pxz;
     position: fixed;
     height: calc(100% -64px);
     top: 64px;
     bottom: 0;
     width: 300px;
-  }
+  } */
   .report-page {
     height: 100%;
-    padding-left: 300px;
-    padding-right: 25px;
-    padding-top: 20px;
-    padding-bottom: 32px;
+    padding-left: 52px;
+    padding-right: 52px;
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 </style>
