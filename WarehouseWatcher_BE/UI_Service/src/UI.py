@@ -7,6 +7,7 @@
 import json
 import customtkinter as ctk
 import threading
+from src.Sensor_logic import on_off_battery_switch,adjust_data_one
 
 
 FIELDS_PER_SENSOR = {

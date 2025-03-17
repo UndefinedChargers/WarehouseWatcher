@@ -13,6 +13,7 @@ import customtkinter as ctk
 from src.UI import SimulatorUI
 
 
+
 def main():
     load_dotenv()
     host = os.getenv("HIVEMQ_HOST")
