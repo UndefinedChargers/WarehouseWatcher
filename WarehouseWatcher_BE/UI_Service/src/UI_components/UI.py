@@ -5,16 +5,16 @@
 import json
 import customtkinter as ctk
 import threading
-from src.Sensor_logic import on_off_battery_switch,adjust_data_one
-from src.mqtt_handler import MQTTHandler
+from UI_components.Sensor_logic import on_off_battery_switch,adjust_data_one
+from UI_components.mqtt_handler import MQTTHandler
 
 
 FIELDS_PER_SENSOR = {
     "Room": ["Temperature"],
     "Refrigerator": ["Temperature"],
     "Freezer": ["Temperature"],
-    "AirQuality_warehouse": ["PM2.5", "CO2", "VOC"],
-    "humidity_warehouse": ["Humidity", "MoistureWeight", "DewPoint", "AirWeight"]
+    "AirQuality_warehouse": ["PM2.5","CO2", "VOC"],
+    "humidity_warehouse": ["Humidity"]
 }
 
 
@@ -42,10 +42,10 @@ class SimulatorUI(ctk.CTk):
         self.tabview = ctk.CTkTabview(self, width=1000, height=600)
         self.tabview.pack(expand=True, fill="both", padx=10, pady=10)
 
-        self.tabview.add("Messages")
+        self.tabview.add("Connection")
         self.tabview.add("Configuration")
 
-        self.msg_display = ctk.CTkTextbox(self.tabview.tab("Messages"),wrap="word",font=("Arial", 12))
+        self.msg_display = ctk.CTkTextbox(self.tabview.tab("Connection"),wrap="word",font=("Arial", 12))
         self.msg_display.pack(expand=True, fill="both", padx=10, pady=10)
         self.configration_tab(sensor_name)
     # function name: configration_tab

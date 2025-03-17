@@ -39,6 +39,87 @@ def on_publish(client, userdata, mid, reason_code, properties):
     #print(f"Message published. MID: {mid}, Reason Code: {reason_code}")
     logger.info(f"Message published. MID: {mid}, Reason Code: {reason_code}",file="./Logs/Publisher_Logs.log")
 
+def on_message(client, userdata, msg):
+    logger.info(f"[MQTT] Return message on {msg.topic}: {msg.payload.decode('utf-8')}")
+
+# function name:on_control_message(client,userdata,msg)
+# Description:This function  is for the control calls from the UI
+# Parameter:void:self
+# return:none
+def on_control_message(client, userdata, msg):
+   
+    try:
+        payload_str = msg.payload.decode("utf-8")
+        payload = json.loads(payload_str)
+        sensor_name = payload.get("sensor_name")
+        action = payload.get("action")
+
+        if sensor_name in sensors:
+            sensor = sensors[sensor_name]
+            logger.info(f"[CONTROL] Received action '{action}' for sensor '{sensor_name}'")
+
+            
+            if action == "set_battery":
+                battery_enabled = payload.get("battery_enabled", True)
+                sensor.battery = 0 if not battery_enabled else 100
+                logger.info(f"[CONTROL] Battery for {sensor_name} set to {sensor.battery}")
+
+            # there include increase data functions
+            elif action == "increase_data":
+                field = payload.get("field")
+
+                if field == "Temperature" and hasattr(sensor, "set_increment_temp_one"):
+                    
+                    sensor.set_increment_temp_one()
+                    logger.info(f"[CONTROL] Increased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                elif field=="PM2.5" and hasattr(sensor,"set_increment_pm_five"):
+                    sensor.set_increment_pm_five()
+                    logger.info(f"[CONTROL] Increased PM for {sensor_name} to {sensor.setPm25}")
+                elif field=="CO2" and hasattr(sensor,"set_increment_co2_100"):
+                    sensor.set_increment_co2_100()
+                    logger.info(f"[CONTROL] Increased C02 for {sensor_name} to {sensor.setCO2}")
+                elif field=="VOC" and hasattr(sensor,"set_increment_VOC_50"):
+                    sensor.set_increment_VOC_50()
+                    logger.info(f"[CONTROL] Increased VOC for {sensor_name} to {sensor.setVOC}")
+
+                elif field=="Humidity" and hasattr(sensor,"set_increment_humidity_5"):
+                    sensor.set_increment_humidity_5()
+                    logger.info(f"[CONTROL] Incremented  Humidity for {sensor_name} to {sensor.setHumid}")
+                else:
+                    logger.warning(f"[CONTROL] Increase action not supported for field '{field}' for {sensor_name}")
+            # these include decrease data functions
+            elif action == "decrease_data":
+                
+                field = payload.get("field")
+                if field == "Temperature" and hasattr(sensor, "set_decrement_temp_one"):
+                    sensor.set_decrement_temp_one()
+                    logger.info(f"[CONTROL] Decreased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                
+                elif field=="PM2.5" and hasattr(sensor,"set_decrement_pm_five"):
+                    sensor.set_decrement_pm_five()
+                    logger.info(f"[CONTROL] Decremented PM for {sensor_name} to {sensor.setpm25}")
+
+                elif field=="CO2" and hasattr(sensor,"set_decrement_co2_100"):
+                    sensor.set_decrement_co2_100()
+                    logger.info(f"[CONTROL] Decremented C02 for {sensor_name} to {sensor.setPm25}")
+
+                elif field=="VOC" and hasattr(sensor,"set_decrement_VOC_50"):
+                    sensor.set_decrement_VOC_50()
+                    logger.info(f"[CONTROL] Decremented VOC for {sensor_name} to {sensor.setVOC}")
+
+                elif field=="Humidity" and hasattr(sensor,"set_decrement_humidity_5"):
+                    sensor.set_decrement_humidity_5()
+                    logger.info(f"[CONTROL] Decremented Humidity for {sensor_name} to {sensor.setHumid}")
+                else:
+                    logger.warning(f"[CONTROL] Decrease action not supported for field '{field}' for {sensor_name}")
+            else:
+                logger.warning(f"[CONTROL] Unknown action '{action}' for {sensor_name}")
+        else:
+            logger.warning(f"[CONTROL] Sensor '{sensor_name}' not found among known sensors.")
+    except Exception as e:
+        logger.error("Error processing control message: " + str(e))
+
+
 # function name:publish_data(client)
 # Description:This function  is used to publish all the sensor data(maybe in  the future if we add motion sensor then it will include that too)
 # Parameter:void:self
@@ -55,13 +136,6 @@ def publish_data(client):
          "sensor_name":sensor_name,
          "data":final_result
       }
-
-    #   theTopic=TOPICS["Thermostat"] + sensor_name
-    #   theTopic=TOPICS.get(sensor_name,f"Waterloo/Warehouse/{sensor_name}")
-    #   payload=json.dumps(sensor_Data)
-    #   client.publish(theTopic, payload, qos=1)
-
-
       sensor_type = sensor_instance.__class__.__name__ 
       theTopic = f"Waterloo/Warehouse/{sensor_type}/{sensor_name}"
       payload = json.dumps(sensor_Data)
@@ -78,7 +152,11 @@ if __name__ == "__main__":
     client.username_pw_set(user, password)
 
     client.on_publish = on_publish
+    client.on_message=on_message
+
+    client.message_callback_add("Waterloo/Warehouse/Control/#",on_control_message)
     client.connect(host, 8883)
+    client.subscribe("Waterloo/Warehouse/#") #subscriber
     client.loop_start()
     try:
         # for i in range(1,4): # test code
