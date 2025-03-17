@@ -15,20 +15,20 @@ export const thresholdselectoptions = [
       {
         oid: "sensor1_temp",
         sensorname: "room-temp",
-        selectionrangemin: 15,
-        selectionrangemax: 40,
+        rangemin: 15,
+        rangemax: 28,
       },
       {
         oid: "sensor2_temp",
         sensorname: "fridge-temp", 
         rangemin: 0,
-        rangemax: 15,
+        rangemax: 8,
       },
       {
         oid: "sensor3_temp",
         sensorname: "freezer-temp", 
         rangemin: -35,
-        rangemax: 0,
+        rangemax: -15,
       },
       {
         oid: "sensor1_air",

@@ -10,13 +10,28 @@ import mqtt from 'mqtt';
 import { useEnvTopicStore } from '@/stores/envTopicStore';
 import { useInventoryStore } from '@/stores/inventoryStore';
 import { useAppStatusStore } from '@/stores/appStatusStore';
+import { notificationHandler } from './notificationHandler';
+
+const client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
+    username: import.meta.env.VITE_MQTT_USER,
+    password: import.meta.env.VITE_MQTT_PASSWORD,
+});
+
+export const publishMQTT = (topic, message) => {
+	let result;
+	client.publish(topic, message, { qos: 1, retain: true }, (err2) => {
+		if (!err2) {
+			console.log(topic, message)
+			result =  true
+		} else {
+			console.error(err2)
+			result = false
+		}
+	})
+	return result;
+};
 
 export const subscribeMQTT = () => {
-    const client = mqtt.connect(import.meta.env.VITE_MQTT_HOST, {
-        username: import.meta.env.VITE_MQTT_USER,
-        password: import.meta.env.VITE_MQTT_PASSWORD,
-    });
-    
     client.on('connect', function () {
         console.log('Connected');
     });
@@ -27,7 +42,7 @@ export const subscribeMQTT = () => {
     
     client.on('message', function (topic, message) {
         // console.log('Received message:', topic, message.toString());
-        const obj = JSON.parse(message);
+        const obj = JSON.parse(message)
         // console.log(topic);
         if (topic.includes("Inventory")) {
             const invStore = useInventoryStore();
@@ -40,8 +55,11 @@ export const subscribeMQTT = () => {
         } else {
             const envStore = useEnvTopicStore();
             envStore.setTopicData(topic, obj);
+            if (!topic.includes("Energy")) {
+                // console.log(topic)
+                notificationHandler(topic, obj);
+            }
         }
-
 
     });
     

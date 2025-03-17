@@ -8,7 +8,13 @@
  <script setup>
 import { ref, onMounted } from "vue";
 import { useAppConfigsStore } from "@/stores/appConfigsStore";
+<<<<<<< HEAD
 
+=======
+let obj = "sensor1_temp";
+let member = "min_threshold";
+let value = 18;
+>>>>>>> 768f5a155314fa691928129883c8deedcbde3edb
 const objectConfig = useAppConfigsStore();
 
 // Warehouse Watcher sensors with default min/max thresholds

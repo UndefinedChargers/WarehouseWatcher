@@ -6,7 +6,7 @@
 
 import { AdvancedDynamicTexture, Image, Control, Rectangle, ScrollViewer, StackPanel, TextBlock, Button } from "@babylonjs/gui"
 import { warehouseSceneConfig, inventory_data } from "@/configs/ww-config";
-import { publishMQTT } from "../helper/publisher";
+import { publishMQTT } from "../helper/wwmqtt";
 
 export class GuiPanel {
   _container: StackPanel;
@@ -88,7 +88,6 @@ export class GuiPanel {
 
     reloadbtn.onPointerClickObservable.add(function() {
       const result = publishMQTT(warehouseSceneConfig.scenestatus.status_topic, JSON.stringify(warehouseSceneConfig.scenestatus.status_message));
-      
     });
     return item_rect;
 }
@@ -119,7 +118,7 @@ export class GuiPanel {
       // const items = Object.keys(data);
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
-        console.log(item);
+        // console.log(item);
         this.buildItemContaier(i, item, subContainer);
       }
     }
