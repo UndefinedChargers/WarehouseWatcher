@@ -5,6 +5,7 @@
 
 import threading
 import paho.mqtt.client as paho
+from paho.mqtt.enums import CallbackAPIVersion
 
 class MQTTHandler:
 #     def __init__(self, host, user, password, on_message_callback, on_connect_callback=None):
@@ -15,7 +16,7 @@ class MQTTHandler:
          self.password = password
         #  self.on_message_callback = on_message_callback
         #  self.on_connect_callback = on_connect_callback
-         self.client = paho.Client()
+         self.client = paho.Client(callback_api_version= CallbackAPIVersion.VERSION2, client_id="", clean_session=True)
 
         # Configure TLS & authentication
          self.client.tls_set()
