@@ -1,3 +1,10 @@
+<!-- 
+ FILE: AdminView.vue
+ PROJECT: Warehouse Watcher
+ PROGRAMMER: Undefined Chargers - Aryan Passi
+ FIRST VERSION: 2025-03-15
+ DESCRIPTION: About Page for WMS
+-->
 <template>
   <div class="about-container">
     <!-- Main Title -->
