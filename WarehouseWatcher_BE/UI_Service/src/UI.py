@@ -63,12 +63,14 @@ class SimulatorUI(ctk.CTk):
 
         left_scrollbar_frame = ctk.CTkScrollableFrame(main_frame, width=600, height=600)
         left_scrollbar_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        right_frame = ctk.CTkFrame(main_frame, corner_radius=8)
-        right_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
+
+        #right scrollbar
+        right_scrollbar_frame=ctk.CTkScrollableFrame(main_frame)
+        right_scrollbar_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
 
         self.Sensor_configration(left_scrollbar_frame, sensor_name)
-
-
+        self.sensor_display(right_scrollbar_frame)
+        
     # function name: Sensor_configration
     # Description: This function basically contain the UI element for the sensor display(button/up/downs)
     # Parameter: void:self
@@ -108,6 +110,36 @@ class SimulatorUI(ctk.CTk):
 
                 data_field_row += 1
     
+    
+
+    # function name:Sensor_Display
+    # Description: This function basically contain the UI elements for the Sensor Reading
+    # Parameter: void:self
+    # return:None
+    def sensor_display(self, parent_frame):
+        
+        display_frame = ctk.CTkFrame(parent_frame, corner_radius=8)
+        display_frame.pack(padx=10, pady=10, fill="x")
+        header_label = ctk.CTkLabel(display_frame, text="Sensor Readings", font=("Arial", 14, "bold"))
+        header_label.pack(pady=(5, 10))
+        self.left_sensor_labels = {}
+
+        # creating  a sub-frame for each sensor block
+        for sensor_name, fields in FIELDS_PER_SENSOR.items():
+            sensor_block_frame = ctk.CTkFrame(display_frame, corner_radius=8)
+            sensor_block_frame.pack(pady=5, fill="x")
+
+            sensor_title = ctk.CTkLabel(sensor_block_frame, text=sensor_name, font=("Arial", 13, "bold"))
+            sensor_title.pack(anchor="w", padx=10, pady=(5, 2))
+
+            for field in fields:
+                # SensorName + FieldName: <Label>
+                field_label = ctk.CTkLabel(sensor_block_frame, text=f"{field}: N/A")
+                field_label.pack(anchor="w", padx=20, pady=2)
+
+                # Store the reference
+                self.left_sensor_labels[(sensor_name, field)] = field_label
+
     # function name:adjust_data
     # Description: This function basically call the adjust_data_one
     # Parameter: void:self

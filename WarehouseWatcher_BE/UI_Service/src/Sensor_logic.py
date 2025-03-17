@@ -39,6 +39,7 @@ def adjust_data_one(sensor_name, field_name, direction, mqtt_handler):
     control_msg = {"sensor_name": sensor_name,"action": action,"field": field_name}
     payload = json.dumps(control_msg)
     topic = f"Waterloo/Warehouse/Control/{sensor_name}"
+    mqtt_handler.publish(topic, payload)
     
     # if msg_display:
     #     log_line = f"[Adjust Data] {action.upper()} '{field_name}' -> {topic}: {payload}\n"
