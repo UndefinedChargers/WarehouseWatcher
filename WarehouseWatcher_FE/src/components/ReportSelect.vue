@@ -33,7 +33,7 @@
             </v-row>
           </v-col>
           <v-col align="center">
-            <v-btn tonal> Search </v-btn>
+            <v-btn @click="searchData" tonal> Search </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -44,6 +44,16 @@
 <script setup>
   import { ref } from 'vue'
 
+  const sensor = ref("");
+  const start = ref("");
+  const end = ref("");
+
+  const searchData = () => {
+    if (!sensor.value || !start.value || !end.value) {
+      alert("Please select all fields");
+      return;
+    }
+  };
 </script>
 
 <style scoped>
