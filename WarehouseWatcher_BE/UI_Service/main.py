@@ -9,6 +9,7 @@ import os
 import json
 from dotenv import load_dotenv
 import customtkinter as ctk
+#from src.UI import SimulatorUI
 from src.UI import SimulatorUI
 
 
