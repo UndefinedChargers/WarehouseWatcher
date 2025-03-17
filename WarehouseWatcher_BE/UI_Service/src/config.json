@@ -1,0 +1,12 @@
+{
+    "appearance_mode": "System",
+    "color_theme": "blue",
+    "sensor_names": [
+      "Room",
+      "Refrigerator",
+      "Freezer",
+      "AirQuality_warehouse",
+      "humidity_warehouse"
+    ]
+  }
+  

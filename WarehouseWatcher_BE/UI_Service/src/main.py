@@ -2,7 +2,8 @@
 # PROJECT :Warehouse Watcher
 # PROGRAMMER : Amel Korandippillil Sunil
 # DESCRIPTION :This is the main file which is used to run the main GUI
-
+# References:https://customtkinter.tomschimansky.com/documentation/
+            #:https://www.youtube.com/watch?v=Y01r643ckfI&list=PLfZw_tZWahjxJl81b1S-vYQwHs_9ZT77f
 
 
 import os
@@ -10,8 +11,8 @@ import json
 from dotenv import load_dotenv
 import customtkinter as ctk
 #from src.UI import SimulatorUI
-from src.UI import SimulatorUI
-from src.Sensor_logic import on_off_battery_switch,adjust_data_one
+from UI_components.UI import SimulatorUI
+from UI_components.Sensor_logic import on_off_battery_switch,adjust_data_one
 
 
 def main():

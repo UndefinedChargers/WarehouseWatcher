@@ -31,7 +31,44 @@ class AirQualitySensor(BaseSensor):
        
         # return round(random.uniform(*self.pm_range), 1)
         return self.setPm25
+
+    # function name:set_increment_pm_five(self)
+    # Description: This function increment the value of pm by 5
+    # Parameter: void:self
+    # return: 
+    def set_increment_pm_five(self):
+        self.setPm25+=5
+        logger.info(f"SET pm25 incremented for {self.sensor_name} to {self.setPm25}",file="./Logs/sensorLogs.log")
+    # function name:set_decrement_pm_five(((self)
+    # Description: This function decrement the value of pm by 5
+    # Parameter: void:self
+    # return: 
+    def set_decrement_pm_five(self):
+        self.setPm25-=5
+        logger.info(f"SET pm25 decrement for {self.sensor_name} to {self.setPm25}",file="./Logs/sensorLogs.log")
+
+    # function name:set_increment_co2_100(self)
+    # Description: This function increment the value of C02 by 100
+    # Parameter: void:self
+    # return: 
+    def set_increment_co2_100(self):
+        self.setCO2+=100
     
+    # function name:set_decrement_co2_100(self)
+    # Description: This function increment the value of C02 by 100
+    # Parameter: void:self
+    # return: 
+    def set_decrement_co2_100(self):
+        self.setCO2-=100
+    # function name:set_increment_VOC_50(self)
+    # Description: This function increment the value of VOC by 50
+    # Parameter: void:self
+    # return: 
+    def set_increment_VOC_50(self):
+        self.setVOC+=50
+
+    def set_decrement_VOC_50(self):
+        self.setVOC-=50
     # function name: generate_co2(self)
     # Description: This function generates a simulated CO2 concentration.
     # Parameter: void:self
@@ -46,7 +83,7 @@ class AirQualitySensor(BaseSensor):
     # return: int - Simulated VOC concentration in ppb
     def generate_voc(self):
         # return random.randint(*self.voc_range)
-        self.setVOC
+        return self.setVOC
     
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
