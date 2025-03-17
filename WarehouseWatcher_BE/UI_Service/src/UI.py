@@ -2,12 +2,11 @@
 # PROJECT :Warehouse Watcher
 # PROGRAMMER : Amel Korandippillil Sunil
 # DESCRIPTION :This file basically contain the intial setup of the UI
-
-
 import json
 import customtkinter as ctk
 import threading
 from src.Sensor_logic import on_off_battery_switch,adjust_data_one
+from src.mqtt_handler import MQTTHandler
 
 
 FIELDS_PER_SENSOR = {
@@ -26,6 +25,14 @@ class SimulatorUI(ctk.CTk):
         self.geometry("1050x650")
         self.sensor_configs = {}
         self.setup_UI(sensor_names)
+        self.mqtt_handler = MQTTHandler(
+            host=host,
+            user=user,
+            password=password,
+           
+        )
+        self.mqtt_handler.connect_and_start()
+
 
     # function name: setup_UI
     # Description: This function generates provide us with a basic UI setup
@@ -100,3 +107,21 @@ class SimulatorUI(ctk.CTk):
                 down_btn.grid(row=data_field_row, column=2, padx=5, pady=5, sticky="w")
 
                 data_field_row += 1
+    
+    # function name:adjust_data
+    # Description: This function basically call the adjust_data_one
+    # Parameter: void:self
+    # return:None
+    def adjust_data(self,sensor_name,field_name,direction="up"):
+        adjust_data_one(sensor_name=sensor_name,field_name=field_name,direction=direction,mqtt_handler=self.mqtt_handler)
+
+    # function name:on_battery_switch_toggled
+    # Description: This function basically call the battery update function
+    # Parameter: void:self
+    # return:None
+    def on_battery_switch_toggled(self, sensor_name):
+      
+        is_on = self.sensor_configs[sensor_name]["battery_var"].get()
+        on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler,sensor_data_manager=self.sensor_data_manager,msg_display=self.msg_display)
+
+        

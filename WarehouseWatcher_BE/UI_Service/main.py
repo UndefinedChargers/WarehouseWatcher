@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import customtkinter as ctk
 #from src.UI import SimulatorUI
 from src.UI import SimulatorUI
-
+from src.Sensor_logic import on_off_battery_switch,adjust_data_one
 
 
 def main():
