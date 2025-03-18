@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 export default defineConfig({
   plugins: [
     vue(),
-    // vueDevTools(), 
+    vueDevTools(), 
   ],
   resolve: {
     alias: {
@@ -16,7 +16,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      "Access-Control-Allow-Origin": "*", 
+      "Access-Control-Allow-Origin": "*", // Enable CORS
     },
   },
 });
