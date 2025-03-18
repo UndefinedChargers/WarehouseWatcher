@@ -35,19 +35,19 @@
 
 <script setup>
 import { ref } from 'vue';
-//import jsPDF from 'jspdf';
-//import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import { utils, writeFile } from 'xlsx';
 
 // Sample report data => replace with queried data later
 const reportData = ref([
-  { name: '2025-03-12', value: 'Temperature: 22°C' },
-  { name: '2025-03-13', value: 'Temperature: 22°C' },
-  { name: '2025-03-14', value: 'Temperature: 22°C' },
-  { name: '2025-03-15', value: 'Temperature: 22°C' },
+  { name: '2025-03-12 8:00', value: 'Temperature: 22°C' },
+  { name: '2025-03-13 8:00', value: 'Temperature: 22°C' },
+  { name: '2025-03-14 8:00', value: 'Temperature: 22°C' },
+  { name: '2025-03-15 8:00', value: 'Temperature: 22°C' },
 ]);
 
 const formatDataToCSV = (data) => {
-  const headers = ['Sensor Name', 'Sensor Data'];
+  const headers = ['Date', 'Temperature'];
   const rows = data.map(item => [item.name, item.value]);
 
   let csvContent = 'data:text/csv;charset=utf-8,';
