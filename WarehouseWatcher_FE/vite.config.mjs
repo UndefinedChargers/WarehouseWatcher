@@ -16,7 +16,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      "Access-Control-Allow-Origin": "*", 
+      "Access-Control-Allow-Origin": "*", // Enable CORS
     },
   },
 });

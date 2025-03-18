@@ -66,6 +66,18 @@ export default {
       selectedDashboard: "",
     };
   },
+  watch: {
+    selectedCategory(newCategory) {
+      // Automatically set the selectedDashboard to the first dashboard in the selected category
+      this.selectedDashboard = this.grafanaDashboards[newCategory]?.[0]?.link || "";
+    }
+  },
+  mounted() {
+    // Set default dashboard when the component mounts
+    if (this.selectedCategory) {
+      this.selectedDashboard = this.grafanaDashboards[this.selectedCategory][0].link;
+    }
+  },
   methods: {
     formatCategoryName(category) {
       return category.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
