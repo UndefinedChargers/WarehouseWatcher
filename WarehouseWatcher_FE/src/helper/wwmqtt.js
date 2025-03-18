@@ -41,7 +41,8 @@ export const subscribeMQTT = () => {
     });
     
     client.on('message', function (topic, message) {
-        // console.log('Received message:', topic, message.toString());
+        try {
+            // console.log('Received message:', topic, message.toString());
         const obj = JSON.parse(message)
         // console.log(topic);
         if (topic.includes("Inventory")) {
@@ -60,7 +61,9 @@ export const subscribeMQTT = () => {
                 notificationHandler(topic, obj);
             }
         }
-
+        } catch(e) {
+            console.log(e)
+        }
     });
     
     client.subscribe('#');
