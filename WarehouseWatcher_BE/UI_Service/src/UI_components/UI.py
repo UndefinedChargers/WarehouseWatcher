@@ -154,6 +154,6 @@ class SimulatorUI(ctk.CTk):
     def on_battery_switch_toggled(self, sensor_name):
       
         is_on = self.sensor_configs[sensor_name]["battery_var"].get()
-        on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler,sensor_data_manager=self.sensor_data_manager,msg_display=self.msg_display)
-
+        # on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler,sensor_data_manager=self.sensor_data_manager,msg_display=self.msg_display)
+        on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler)
         

@@ -17,10 +17,10 @@ from loguru import logger
 class thermostat(BaseSensor):
    
 
-    def __init__(self,sensor_name,temp_range,drain_cycle):
+    def __init__(self,sensor_name,drain_cycle,set_temp):
         super().__init__(sensor_name,drain_cycle)
-        self.temp_range=temp_range
-        self.set_temperature=35
+        # self.temp_range=temp_range
+        self.set_temperature=set_temp
         logger.info(f"ThermostatSensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
             
     # function name:temperataure_generater(self)
