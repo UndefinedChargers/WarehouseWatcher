@@ -32,9 +32,9 @@ host = os.getenv("HIVEMQ_HOST")
 # freezer=-18
 # __init__(self,sensor_name,drain_cycle,set_temp)
 sensors= {
-    "Room": thermostat("Warehouse_thermostat_Sensor",10,25),
-    "Refrigerator": thermostat("Refrigerator",150,-3.3),
-    "Freezer": thermostat("Freezer",200,-18),
+    "Room": thermostat("Warehouse_thermostat_Sensor",10,25.0), #FLOAT
+    "Refrigerator": thermostat("Refrigerator",150,-3.3), #FLOAT
+    "Freezer": thermostat("Freezer",200,-18.0), #FLOAT
     "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20),
     "humidity_warehouse":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room",25,10), (35,55),2)
 
