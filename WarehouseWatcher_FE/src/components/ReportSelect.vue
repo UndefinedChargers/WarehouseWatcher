@@ -58,7 +58,16 @@ const options = ref([
 
 async function getData() {
   console.log(selectedsensor.value, startdt.value, enddt.value)
-  const response = await axios.get('http://localhost')
+  const { response } = await axios.get('http://localhost',
+    {
+      params: {
+        start: "2025-01-01",
+        end: "2025-01-01",
+      },
+    }
+  )
+  // console.log(response)
+  // store to store
 }
 
 </script>
