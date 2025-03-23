@@ -2,6 +2,7 @@
 import TheDrawer from '@/components/TheDrawer.vue';
 import ReportSelect from '@/components/ReportSelect.vue';
 import ReportList from '@/components/ReportList.vue';
+import ReportPlot from '@/components/ReportPlot.vue';
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import ReportList from '@/components/ReportList.vue';
     </div> -->
     <div class="report-page">
       <ReportSelect />
+      <!-- <ReportPlot /> -->
       <ReportList />
     </div>
   </div>

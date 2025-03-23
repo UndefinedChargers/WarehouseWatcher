@@ -19,4 +19,7 @@ export default defineConfig({
       "Access-Control-Allow-Origin": "*", // Enable CORS
     },
   },
+  devServer: {
+    proxy: 'http://localhost:8080'
+  }
 });

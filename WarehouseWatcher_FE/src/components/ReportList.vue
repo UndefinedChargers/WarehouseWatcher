@@ -1,18 +1,42 @@
 <!-- 
- FILE: ReportSelect.vue
+ FILE: ReportList.vue
  PROJECT: Warehouse Watcher
- PROGRAMMER: Undefined Chargers - Salma
+ PROGRAMMER: Undefined Chargers - Salma, Yujung Park
  FIRST VERSION: 
  DESCRIPTION: 
  References: Starting code- https://vuetifyjs.com/en/components/app-bars/#images
+ https://vuetifyjs.com/en/components/tables/#usage
  -->
 
 <template>
   <div class="reportlist-container">
-    <h1>Results</h1>
+    <!-- <h1>Results</h1> -->
     <div>
-      <v-container class="bg-surface-variant mt-6 rounded">
-        <v-row>
+      <v-container class="bg-surface-variant ma-2 rounded">
+        <div class="downloadbtn-container d-flex justify-center mb-6 ga-4">
+          <v-btn @click="downloadCSV" color="primary">Download CSV</v-btn>
+          <v-btn @click="downloadPDF" color="primary">Download PDF</v-btn>
+          <v-btn @click="downloadExcel" color="primary">Download Excel</v-btn>
+        </div>
+
+        <div>
+          <h3>{{sensordataStore.sensorName}}</h3>
+        <v-table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  v-for="(item, index) in reportData">
+              <td>{{ item.time }}</td>
+              <td>{{ item.data_values }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </div>
+        <!-- <v-row>
           <v-col cols="12">
             <v-list>
               <v-list-item-group v-if="reportData && reportData.length">
@@ -32,17 +56,21 @@
             <v-btn @click="downloadPDF" color="primary">Download PDF</v-btn>
             <v-btn @click="downloadExcel" color="primary">Download Excel</v-btn>
           </v-col>
-        </v-row>
+        </v-row> -->
+        
       </v-container>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import jsPDF from 'jspdf';
 import { utils, writeFile } from 'xlsx';
+import { useSensorDataStore } from "@/stores/sensorDataStore";
 
+const sensordataStore = useSensorDataStore();
+// console.log(sensordata);
 // Sample report data => replace with queried data later
 const reportData = ref([
   { name: '2025-03-12 8:00', value: 'Temperature: 22°C' },
@@ -50,6 +78,14 @@ const reportData = ref([
   { name: '2025-03-14 8:00', value: 'Temperature: 22°C' },
   { name: '2025-03-15 8:00', value: 'Temperature: 22°C' },
 ]);
+
+sensordataStore.$subscribe((mutation, state) => {
+  // console.log(state.sensorData)
+  reportData.value = [];
+  console.log(sensordataStore.getSensorData(state.sensorName))
+  reportData.value = sensordataStore.getSensorData(state.sensorName)
+  console.log(reportData.value)
+})
 
 const formatDataToCSV = (data) => {
   const headers = ['Date', 'Temperature'];

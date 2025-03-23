@@ -17,26 +17,28 @@
  
  // Warehouse Watcher sensors with default min/max thresholds
  const thresholds = ref([
-   { id: "temperature", name: "Temperature", min_member: "min_threshold", max_member: "max_threshold", min_value: 15, max_value: 40, min: 10, max: 50 },
-   { id: "humidity", name: "Humidity", min_member: "min_threshold", max_member: "max_threshold", min_value: 30, max_value: 70, min: 20, max: 80 },
-   { id: "air_quality", name: "Air Quality", min_member: "min_threshold", max_member: "max_threshold", min_value: 60, max_value: 250, min: 50, max: 300 },
+   { id: "sensor1_temp", name: "Room Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 35 },
+   { id: "sensor2_temp", name: "Refrigerator Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 0, max: 10 },
+   { id: "sensor3_temp", name: "Freezer Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 0, max: -35 },
+   { id: "sensor1_humidity", name: "Humidity Sensor", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 50 },
+   { id: "sensor1_air", name: "Air Quality Sensor", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 50 },
  ]);
- 
+
  // Load saved thresholds from store (or API)
  const loadSavedThresholds = () => {
-   thresholds.value.forEach(sensor => {
-     const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
-     const savedMax = objectConfig.getObjectMemberValue(sensor.id, sensor.max_member);
- 
-     if (savedMin !== undefined) sensor.min_value = savedMin;
-     if (savedMax !== undefined) sensor.max_value = savedMax;
-   });
+  // console.log(objectConfig)
+  // iterate thresholds and complete current min, max value
+  thresholds.value.map(sensor => {
+    const sensordata_object = objectConfig.getConfigObject(sensor.id);
+    sensor.current_min = sensordata_object.min_threshold;
+    sensor.current_max = sensordata_object.max_threshold;
+  })
  };
  
  // Update single threshold
  const updateConfigs = (sensor, type) => {
-   const value = type === "min" ? sensor.min_value : sensor.max_value;
-   const member = type === "min" ? sensor.min_member : sensor.max_member;
+   const value = type === "min" ? sensor.new_min : sensor.new_max;
+   const member = type === "min" ? sensor.new_min : sensor.new_max;
  
    // Ensure min is always less than max
    if (sensor.min_value >= sensor.max_value) {
@@ -63,7 +65,51 @@
  </script>
  
  <template>
-   <div class="threshold-container">
+  <v-container class="bg-surface-variant pa-0 rounded elevation-2">
+    <div class="pa-3 ma-5 rounded">
+      <v-row>
+        <v-col>Sensor</v-col>
+        <v-col>Type</v-col>
+        <v-col>Current Value</v-col>
+        <v-col>New Value</v-col>
+      </v-row>
+    </div>
+    <div v-for="sensor in thresholds" :key="sensor.id" class="pa-3 ma-5 bg-white rounded">
+      <v-row no-gutters>
+        <v-col>{{ sensor.name }}</v-col>
+        <v-col>{{ sensor.min_member }}</v-col>
+        <v-col>{{ sensor.current_min}}</v-col>
+        <v-col>
+          <input 
+          type="number" 
+          v-model="sensor.new_min" 
+          :min="sensor.min" 
+          :max="sensor.max"
+          class="ma-2"
+          />
+          <button class="ma-2" @click="updateConfigs(sensor, 'max')">Save</button>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col>{{ sensor.name }}</v-col>
+        <v-col>{{ sensor.max_member }}</v-col>
+        <v-col>{{ sensor.current_max }}</v-col>
+        <v-col>
+          <input 
+          type="number" 
+          v-model="sensor.new_max" 
+          :min="sensor.min" 
+          :max="sensor.max"
+          class="ma-2"
+          />
+          <button class="ma-2" @click="updateConfigs(sensor, 'max')">Save</button>
+        </v-col>
+      </v-row>
+    </div>
+
+  </v-container>
+
+   <!-- <div class="threshold-container">
      <h2>Sensor Threshold Configuration</h2>
      <div class="threshold-list">
        <div v-for="sensor in thresholds" :key="sensor.id" class="threshold-item">
@@ -95,7 +141,8 @@
        </div>
      </div>
      <button class="save-btn" @click="saveAllThresholds">Save All Thresholds</button>
-   </div>
+   </div> -->
+  
  </template>
  
  <style scoped>

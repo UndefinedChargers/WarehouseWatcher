@@ -13,6 +13,8 @@
     "@babylonjs/gui": "^7.43.0",
     "@babylonjs/inspector": "^7.44.0",
     "@babylonjs/loaders": "^7.44.0",
+    "axios": "^1.8.3",
+    "d3": "^7.9.0",
     "jspdf": "^3.0.1",
     "mqtt": "^5.10.3",
     "pinia": "^2.3.0",
@@ -25,10 +27,10 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
-    "vite": "^6.2.2",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "^5.0.8",
-    "vite-plugin-vue-devtools": "^7.6.8",
-    "postcss": "^8.5.3"
+    "postcss": "^8.5.3",
+    "vite": "^6.2.2",
+    "vite-plugin-vue-devtools": "^7.6.8"
   }
 }
