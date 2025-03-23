@@ -18,18 +18,12 @@ import ReportList from '@/components/ReportList.vue';
 
 <style>
   .compliance-main {
+    display: flex;
+    overflow: auto;
+    width: 100%;
     height: 100%;
-    /* display: grid; */
-
+    justify-content: center;
   }
-  /* .side-bar {
-    left: 0pxz;
-    position: fixed;
-    height: calc(100% -64px);
-    top: 64px;
-    bottom: 0;
-    width: 300px;
-  } */
   .report-page {
     height: 100%;
     padding-left: 52px;
