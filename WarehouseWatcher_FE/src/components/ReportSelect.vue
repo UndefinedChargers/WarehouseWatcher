@@ -64,8 +64,7 @@ async function getData() {
   var edt = new Date(enddt.value).toISOString();
   // console.log(sdt)
   console.log(selectedsensor.value, sdt, edt)
-
-  const response = await axios.get('http://localhost:8080/api/sensordata',
+  const response = await axios.get(import.meta.env.VITE_WW_ENDPOINT,
     {
       params: {
         topic: selectedsensor.value,

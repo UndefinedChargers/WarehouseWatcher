@@ -11,8 +11,10 @@
 <template>
   <div class="reportlist-container">
     <!-- <h1>Results</h1> -->
+    <div></div>
+
     <div>
-      <v-container class="bg-surface-variant ma-2 rounded">
+      <v-container class="ma-2 rounded">
         <div class="downloadbtn-container d-flex justify-center mb-6 ga-4">
           <v-btn @click="downloadCSV" color="primary">Download CSV</v-btn>
           <v-btn @click="downloadPDF" color="primary">Download PDF</v-btn>

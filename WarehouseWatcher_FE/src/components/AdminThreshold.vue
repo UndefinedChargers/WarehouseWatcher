@@ -12,9 +12,7 @@
  let obj = "sensor1_temp"; // Remote change
  let member = "min_threshold"; // Remote change
  let value = 18; // Remote change
- 
- const objectConfig = useAppConfigsStore();
- 
+  
  // Warehouse Watcher sensors with default min/max thresholds
  const thresholds = ref([
    { id: "sensor1_temp", name: "Room Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 35 },
@@ -24,10 +22,27 @@
    { id: "sensor1_air", name: "Air Quality Sensor", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 50 },
  ]);
 
+ const objectConfig = useAppConfigsStore();
+ objectConfig.$subscribe((mutation, state) => {
+  // console.log(objectConfig)
+  thresholds.value.map(sensor => {
+    // iterate thresholds and complete current min, max value
+    const sensordata_object = objectConfig.getConfigObject(sensor.id);
+    sensor.current_min = sensordata_object.min_threshold;
+    sensor.current_max = sensordata_object.max_threshold;
+  })
+})
+
  // Load saved thresholds from store (or API)
  const loadSavedThresholds = () => {
-  // console.log(objectConfig)
-  // iterate thresholds and complete current min, max value
+  // thresholds.value.forEach(sensor => {
+  //    const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
+  //    const savedMax = objectConfig.getObjectMemberValue(sensor.id, sensor.max_member);
+ 
+  //    if (savedMin !== undefined) sensor.min_value = savedMin;
+  //    if (savedMax !== undefined) sensor.max_value = savedMax;
+  //  });
+
   thresholds.value.map(sensor => {
     const sensordata_object = objectConfig.getConfigObject(sensor.id);
     sensor.current_min = sensordata_object.min_threshold;
@@ -38,14 +53,14 @@
  // Update single threshold
  const updateConfigs = (sensor, type) => {
    const value = type === "min" ? sensor.new_min : sensor.new_max;
-   const member = type === "min" ? sensor.new_min : sensor.new_max;
+   const member = type === "min" ? sensor.min_member : sensor.max_member;
  
    // Ensure min is always less than max
    if (sensor.min_value >= sensor.max_value) {
      alert("Min threshold cannot be greater than or equal to Max threshold!");
      return;
    }
- 
+
    objectConfig.setObjectMemberValue(sensor.id, member, value);
  };
  
@@ -57,15 +72,16 @@
    });
    alert("All thresholds have been saved successfully!");
  };
- 
+
  // Load saved values when component mounts
  onMounted(() => {
-   loadSavedThresholds();
+   loadSavedThresholds(); 
  });
  </script>
  
  <template>
-  <v-container class="bg-surface-variant pa-0 rounded elevation-2">
+  <h1 class="text-center">Threshold Settings</h1>
+  <v-container class="bg-light-gray pa-3 rounded elevation-2">
     <div class="pa-3 ma-5 rounded">
       <v-row>
         <v-col>Sensor</v-col>
@@ -74,11 +90,11 @@
         <v-col>New Value</v-col>
       </v-row>
     </div>
-    <div v-for="sensor in thresholds" :key="sensor.id" class="pa-3 ma-5 bg-white rounded">
+    <div v-for="sensor in thresholds" :key="sensor.id" class="pa-3 ma-5 bg-white rounded  ">
       <v-row no-gutters>
-        <v-col>{{ sensor.name }}</v-col>
-        <v-col>{{ sensor.min_member }}</v-col>
-        <v-col>{{ sensor.current_min}}</v-col>
+        <v-col class="ma-2">{{ sensor.name }}</v-col>
+        <v-col class="ma-2">{{ sensor.min_member }}</v-col>
+        <v-col class="ma-2">{{ sensor.current_min}}</v-col>
         <v-col>
           <input 
           type="number" 
@@ -87,13 +103,13 @@
           :max="sensor.max"
           class="ma-2"
           />
-          <button class="ma-2" @click="updateConfigs(sensor, 'max')">Save</button>
+          <button class="ma-2" @click="updateConfigs(sensor, 'min')">Save</button>
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col>{{ sensor.name }}</v-col>
-        <v-col>{{ sensor.max_member }}</v-col>
-        <v-col>{{ sensor.current_max }}</v-col>
+        <v-col class="ma-2">{{ sensor.name }}</v-col>
+        <v-col class="ma-2">{{ sensor.max_member }}</v-col>
+        <v-col class="ma-2">{{ sensor.current_max }}</v-col>
         <v-col>
           <input 
           type="number" 
