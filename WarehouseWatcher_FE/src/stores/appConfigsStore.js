@@ -1,7 +1,7 @@
 // FILE: appConfigsStore.js
 // PROJECT: Warehouse Watcher
 // PROGRAMMER: Undefined Chargers - Yujung Park, Aryan Passi
-// FIRST VERSION: 2025-03-23
+// FIRST VERSION: 2025-03-05
 // https://stackoverflow.com/questions/6439915/how-to-set-a-javascript-object-values-dynamically
 
 import { defineStore } from 'pinia'
