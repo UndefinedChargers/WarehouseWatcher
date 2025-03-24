@@ -12,52 +12,30 @@
  let obj = "sensor1_temp"; // Remote change
  let member = "min_threshold"; // Remote change
  let value = 18; // Remote change
-  
+ 
+ const objectConfig = useAppConfigsStore();
+ 
  // Warehouse Watcher sensors with default min/max thresholds
  const thresholds = ref([
-   { id: "sensor1_temp", name: "Room Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 35 },
-   { id: "sensor2_temp", name: "Refrigerator Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 0, max: 10 },
-   { id: "sensor3_temp", name: "Freezer Thermostat", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 0, max: -35 },
-   { id: "sensor1_humidity", name: "Humidity Sensor", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 50 },
-   { id: "sensor1_air", name: "Air Quality Sensor", min_member: "min_threshold", max_member: "max_threshold", current_min: 0, current_max: 0, new_min: 0, new_max: 0, min: 10, max: 50 },
+   { id: "temperature", name: "Temperature", min_member: "min_threshold", max_member: "max_threshold", min_value: 15, max_value: 40, min: 10, max: 50 },
+   { id: "humidity", name: "Humidity", min_member: "min_threshold", max_member: "max_threshold", min_value: 30, max_value: 70, min: 20, max: 80 },
+   { id: "air_quality", name: "Air Quality", min_member: "min_threshold", max_member: "max_threshold", min_value: 60, max_value: 250, min: 50, max: 300 },
  ]);
-<<<<<<< HEAD
  
  // Load saved thresholds from store 
-=======
-
- const objectConfig = useAppConfigsStore();
- objectConfig.$subscribe((mutation, state) => {
-  // console.log(objectConfig)
-  thresholds.value.map(sensor => {
-    // iterate thresholds and complete current min, max value
-    const sensordata_object = objectConfig.getConfigObject(sensor.id);
-    sensor.current_min = sensordata_object.min_threshold;
-    sensor.current_max = sensordata_object.max_threshold;
-  })
-})
-
- // Load saved thresholds from store (or API)
->>>>>>> dab2c88f177e547c7964275c8afa2d864b6c93f3
  const loadSavedThresholds = () => {
-  // thresholds.value.forEach(sensor => {
-  //    const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
-  //    const savedMax = objectConfig.getObjectMemberValue(sensor.id, sensor.max_member);
+   thresholds.value.forEach(sensor => {
+     const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
+     const savedMax = objectConfig.getObjectMemberValue(sensor.id, sensor.max_member);
  
-  //    if (savedMin !== undefined) sensor.min_value = savedMin;
-  //    if (savedMax !== undefined) sensor.max_value = savedMax;
-  //  });
-
-  thresholds.value.map(sensor => {
-    const sensordata_object = objectConfig.getConfigObject(sensor.id);
-    sensor.current_min = sensordata_object.min_threshold;
-    sensor.current_max = sensordata_object.max_threshold;
-  })
+     if (savedMin !== undefined) sensor.min_value = savedMin;
+     if (savedMax !== undefined) sensor.max_value = savedMax;
+   });
  };
  
  // Update single threshold
  const updateConfigs = (sensor, type) => {
-   const value = type === "min" ? sensor.new_min : sensor.new_max;
+   const value = type === "min" ? sensor.min_value : sensor.max_value;
    const member = type === "min" ? sensor.min_member : sensor.max_member;
  
    // Ensure min is always less than max
@@ -65,7 +43,7 @@
      alert("Min threshold cannot be greater than or equal to Max threshold!");
      return;
    }
-
+ 
    objectConfig.setObjectMemberValue(sensor.id, member, value);
  };
  
@@ -77,60 +55,15 @@
    });
    alert("All thresholds have been saved successfully!");
  };
-
+ 
  // Load saved values when component mounts
  onMounted(() => {
-   loadSavedThresholds(); 
+   loadSavedThresholds();
  });
  </script>
  
  <template>
-  <h1 class="text-center">Threshold Settings</h1>
-  <v-container class="bg-light-gray pa-3 rounded elevation-2">
-    <div class="pa-3 ma-5 rounded">
-      <v-row>
-        <v-col>Sensor</v-col>
-        <v-col>Type</v-col>
-        <v-col>Current Value</v-col>
-        <v-col>New Value</v-col>
-      </v-row>
-    </div>
-    <div v-for="sensor in thresholds" :key="sensor.id" class="pa-3 ma-5 bg-white rounded  ">
-      <v-row no-gutters>
-        <v-col class="ma-2">{{ sensor.name }}</v-col>
-        <v-col class="ma-2">{{ sensor.min_member }}</v-col>
-        <v-col class="ma-2">{{ sensor.current_min}}</v-col>
-        <v-col>
-          <input 
-          type="number" 
-          v-model="sensor.new_min" 
-          :min="sensor.min" 
-          :max="sensor.max"
-          class="ma-2"
-          />
-          <button class="ma-2" @click="updateConfigs(sensor, 'min')">Save</button>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col class="ma-2">{{ sensor.name }}</v-col>
-        <v-col class="ma-2">{{ sensor.max_member }}</v-col>
-        <v-col class="ma-2">{{ sensor.current_max }}</v-col>
-        <v-col>
-          <input 
-          type="number" 
-          v-model="sensor.new_max" 
-          :min="sensor.min" 
-          :max="sensor.max"
-          class="ma-2"
-          />
-          <button class="ma-2" @click="updateConfigs(sensor, 'max')">Save</button>
-        </v-col>
-      </v-row>
-    </div>
-
-  </v-container>
-
-   <!-- <div class="threshold-container">
+   <div class="threshold-container">
      <h2>Sensor Threshold Configuration</h2>
      <div class="threshold-list">
        <div v-for="sensor in thresholds" :key="sensor.id" class="threshold-item">
@@ -162,8 +95,7 @@
        </div>
      </div>
      <button class="save-btn" @click="saveAllThresholds">Save All Thresholds</button>
-   </div> -->
-  
+   </div>
  </template>
  
  <style scoped>
