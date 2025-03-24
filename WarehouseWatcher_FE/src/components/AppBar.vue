@@ -73,7 +73,7 @@ const overlay = ref(false)
 const appNotification = useAppConfigsStore()
 const alerts = appNotification.notifications
 const alert = computed(() => appNotification.notifications.size) 
-console.log(alerts)
+// console.log(alerts)
 
 </script>
 

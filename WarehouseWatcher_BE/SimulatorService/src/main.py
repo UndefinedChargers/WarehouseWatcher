@@ -27,12 +27,16 @@ host = os.getenv("HIVEMQ_HOST")
 # format for sensors
 # location :thermostat(sensor_name,temp_range,drain_cycle)
 # location: AirQualitySensor(sensor_name, pm_range=(5, 100), co2_range=(300, 1000), voc_range=(0, 500), drain_cycle=100)
+# room=25
+# refre=-3.3
+# freezer=-18
+# __init__(self,sensor_name,drain_cycle,set_temp)
 sensors= {
-    "Room": thermostat("Warehouse_thermostat_Sensor", (20.0, 25.0),10),
-    "Refrigerator": thermostat("Refrigerator", (2.0, 5.0),150),
-    "Freezer": thermostat("Freezer", (-18.0, -15.0),200),
+    "Room": thermostat("Warehouse_thermostat_Sensor",10,25.0), #FLOAT
+    "Refrigerator": thermostat("Refrigerator",150,-3.3), #FLOAT
+    "Freezer": thermostat("Freezer",200,-18.0), #FLOAT
     "AirQuality_warehouse": AirQualitySensor("Warehouse_Air_Sensor", (1,100), (300, 1000), (0, 500),20),
-    "humidity_warehouse":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room", (20.0, 25.0),10), (35,55),2)
+    "humidity_warehouse":HumiditySensor("Warehouse_Humidity_Sensor", thermostat("Room",25,10), (35,55),2)
 
 }
 def on_publish(client, userdata, mid, reason_code, properties):
@@ -60,11 +64,17 @@ def on_control_message(client, userdata, msg):
 
             
             if action == "set_battery":
-                battery_enabled = payload.get("battery_enabled", True)
-                sensor.battery = 0 if not battery_enabled else 100
-                logger.info(f"[CONTROL] Battery for {sensor_name} set to {sensor.battery}")
+              battery_enabled = payload.get("battery_enabled", True)
+              if not battery_enabled:
+                  sensor.battery = 0
+                  sensor.set_battery_UI=True
+              else:
+                  sensor.battery = 100
+                  sensor.set_battery_UI=False
 
-            # there include increase data functions
+              logger.info(f"[CONTROL] Battery for {sensor_name} set to {sensor.battery}")
+
+            #  increase data functions
             elif action == "increase_data":
                 field = payload.get("field")
 
@@ -128,8 +138,8 @@ def publish_data(client):
    for sensor_name,sensor_instance in sensors.items():
       data=sensor_instance.generate_sensor_data()
       if data is None:
-         sensor_instance.restart_sensor()
-         continue
+        sensor_instance.restart_sensor()
+        continue
 
       final_result=json.loads(data)["Result"][0]
       sensor_Data={

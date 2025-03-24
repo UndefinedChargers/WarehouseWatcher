@@ -23,10 +23,8 @@ class BaseSensor(ABC):
         self.battery_drain_cycle = drain_cycle
         self.drain_per_cycle = 100 / self.battery_drain_cycle
         self.cycle_count = 0
-
-
         # logger.info(f"Initialized Sensor: {self.sensor_name} | ID: {self.sensor_id}")
-
+        self.set_batteryUI=False
     # function name:battery_updates()
     # Description:This function is used to simulate and  update the battey drain and life
     # Parameter:void:self
@@ -102,7 +100,7 @@ class BaseSensor(ABC):
     # return:Boolean
 
     def restart_sensor(self):
-        if self.battery <= 0 or self.update_voltage() < self.min_voltage:
+        if self.battery <= 0 or self.update_voltage() < self.min_voltage and self.set_batteryUI:
            
             # Reset sensor attributes
             self.battery = 100

@@ -4,24 +4,28 @@
 // FIRST VERSION:   2025-03-02
 
 export const grafana_dashboards = {
-    humidity: [
-        {   name: "Humidity Last Hour", 
-            link: "http://172.206.30.225:3000/d/aeefvn1mryhhce/humidity-last-hour?orgId=2&from=2025-03-02T15:28:41.043Z&to=2025-03-02T16:28:41.043Z&timezone=browser&viewPanel=panel-1" 
-        },
-        {   name: "Humidity Last 2 Days", 
-            link: "http://172.206.30.225:3000/d/ceefvqd4nl7ggb/humidity-last-2-days?orgId=2&from=now-2d&to=now&timezone=browser&viewPanel=panel-1" 
-        }
-    ],
-    airQuality: [
-        {   name: "CO2 Last Hour", 
-            link: "http://172.206.30.225:3000/d/feefleimtlqtca/c02-last-hour?orgId=2&from=2025-03-02T15:28:03.974Z&to=2025-03-02T16:28:03.974Z&timezone=browser&viewPanel=panel-1" 
-        },
-        {   name: "CO2 Last 2 Days", 
-            link: "http://172.206.30.225:3000/d/eeeftzn77slq8c/co2-last-2-days?orgId=2&from=now-2d&to=now&timezone=browser&viewPanel=panel-1" 
-        }
-    ],
-    energy: {
+    "Energy Consumption": [
+      {
         name: "Energy Consumption Last 2 Days",
-        link: "http://172.206.30.225:3000/d/beerjk87fqw3kc/energy-consumption?orgId=2&from=now-2d&to=now&timezone=browser&viewPanel=panel-1"
-    }
+        link: "https://172.206.30.225:3000/d/beerjk87fqw3kc/energy-consumption-last-2-days?orgId=2&from=now-2d&to=now&timezone=browser&refresh=30m"
+      },
+      {
+        name: "Energy Consumption Last 30 Days",
+        link: "https://172.206.30.225:3000/d/eeff59kj7oav4c/energy-consumption-last-30-days?orgId=2&from=now-30d&to=now&timezone=browser&refresh=30m"
+      }
+    ],
+    "Environment": [
+      {
+        name: "Environment Last 30 Days",
+        link: "https://172.206.30.225:3000/d/aeffh96iz7bb4b/environment-last-30-days?orgId=2&from=now-30d&to=now&timezone=browser&refresh=30m"
+      },
+      {
+        name: "Environment Last Hour",
+        link: "https://172.206.30.225:3000/d/deffalkw79slcb/environment-last-hour?orgId=2&from=now-1h&to=now&timezone=browser&refresh=30m"
+      },
+      {
+        name: "Environment Real-Time",
+        link: "https://172.206.30.225:3000/d/eeffszsys7pc0d/environment-real-time?orgId=2&from=now-5m&to=now&timezone=browser&refresh=5m"
+      }
+    ]
   };

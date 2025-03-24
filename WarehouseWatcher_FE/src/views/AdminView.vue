@@ -24,7 +24,6 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
     </aside>
 
     <main class="report-page">
-      <h1>Threshold Settings</h1>
       <AdminThreshold />
     </main>
   </div>
@@ -35,6 +34,8 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
   display: flex;
   height: 100vh;
   background-color: #f4f4f4;
+  color: black;
+  /* text-align: center; */
 }
 
 /* Sidebar Styling */
@@ -114,5 +115,10 @@ h1 {
   .report-page {
     margin-left: 0;
   }
+}
+
+.main-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 }
 </style>

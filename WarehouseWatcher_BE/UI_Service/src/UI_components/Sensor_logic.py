@@ -10,11 +10,12 @@ import json
 # Description: This function basically sends the control message of the battery updates to the subscriber of the UI controls
 # Parameter: void:self
 # return: sensor_name,is_on,mqtt_handler,sensor_datamanager,msg_display 
-def on_off_battery_switch(sensor_name,is_on,mqtt_handler,sensor_datamanager):
+def on_off_battery_switch(sensor_name,is_on,mqtt_handler):
 
     control_message={"sensor_name":sensor_name,"action":"set_battery","battery_enabled":is_on}
     payload=json.dumps(control_message)
     topic=f"Waterloo/Warehouse/Control/{sensor_name}"
+    mqtt_handler.publish(topic, payload)
 
     if is_on:
         new_battery=100
