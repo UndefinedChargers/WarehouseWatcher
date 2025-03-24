@@ -27,13 +27,12 @@ def getPanels():
     if response.status_code == 200:
 
         try: 
-            grafanaData = response.json()
-            panels = grafanaData.get('dashboard', {}).get('panels', [])
+            dashboardData = response.json()
+            panels = dashboardData.get('dashboard', {}).get('panels', [])
+            print("Show panels.")
             return panels
         except ValueError:
             return response.text
-        
-        return "Success", 200
 
     else:
         return "Failure", 400
