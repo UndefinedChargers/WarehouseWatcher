@@ -4,51 +4,61 @@
 // FIRST VERSION: 2025-03-23
 // https://stackoverflow.com/questions/6439915/how-to-set-a-javascript-object-values-dynamically
 
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useAppConfigsStore = defineStore('appConfigsStore', {
   state: () => ({
     sensorObjConfigs: new Map(),
     notifications: new Map(),
   }),
-  
+
   getters: {
-    // Get the entire config object for a specific sensor
-    individualObjectConfig: (state) => (objid) => {
-      return state.sensorObjConfigs.get(objid);
+    // Retrieve the entire configuration object for a given sensor by its ID
+    getConfigObject: (obj) => {
+      return (topic) => obj.sensorObjConfigs.get(topic);
     },
-    
-    // Get specific config values (min_threshold, max_threshold) for a sensor
-    getConfigObject: (state) => (topic) => {
-      return state.sensorObjConfigs.get(topic);
+    // Get the current threshold value of a specific sensor member
+    getThreshold: (sensorId, type) => {
+      const sensorConfig = obj.sensorObjConfigs.get(sensorId);
+      return sensorConfig ? sensorConfig[type] : undefined;
     },
   },
 
   actions: {
-    // Set object configurations for a given sensor
-    setObjectConfigs (objid, configs) {
+    // Set configuration for a sensor
+    setObjectConfigs(objid, configs) {
       this.sensorObjConfigs.set(objid, configs);
     },
-    
-    // Update a specific member of a sensor config (e.g., min_threshold or max_threshold)
-    setObjectMemberValue (objid, membername, value) {
+
+    // Set or update a specific member of a sensor configuration
+    setObjectMemberValue(objid, membername, value) {
       let object = this.sensorObjConfigs.get(objid);
       if (object) {
         object[membername] = value;
+      } else {
+        console.error(`Sensor with id ${objid} not found.`);
       }
     },
-    
-    // Set notification settings for a specific UUID
-    setNotifications (uuid, notification) {
+
+    // Save threshold values for a sensor
+    setThreshold(objid, minThreshold, maxThreshold) {
+      let object = this.sensorObjConfigs.get(objid);
+      if (object) {
+        object.min_threshold = minThreshold;
+        object.max_threshold = maxThreshold;
+      } else {
+        console.error(`Sensor with id ${objid} not found.`);
+      }
+    },
+
+    // Set notifications, e.g., alerts for thresholds
+    setNotifications(uuid, notification) {
       this.notifications.set(uuid, notification);
     },
-    
-    // Clear all notifications
-    resetNotifications () {
+
+    // Reset all notifications
+    resetNotifications() {
       this.notifications.clear();
     },
   },
-
-  // Sync with local storage for persisting config data
-  persist: true, // This assumes a Pinia plugin is used for persistence
 });
