@@ -22,7 +22,7 @@
    { id: "air_quality", name: "Air Quality", min_member: "min_threshold", max_member: "max_threshold", min_value: 60, max_value: 250, min: 50, max: 300 },
  ]);
  
- // Load saved thresholds from store (or API)
+ // Load saved thresholds from store 
  const loadSavedThresholds = () => {
    thresholds.value.forEach(sensor => {
      const savedMin = objectConfig.getObjectMemberValue(sensor.id, sensor.min_member);
