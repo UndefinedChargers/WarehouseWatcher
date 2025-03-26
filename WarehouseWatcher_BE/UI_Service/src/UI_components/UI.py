@@ -31,6 +31,7 @@ class SimulatorUI(ctk.CTk):
         self.mqtt_handler = None
         self.left_sensor_labels = {}
         self.setup_UI(sensor_names)
+        
     # function name:setup_UI
     # Description:This function is used to set up of the setup_UI
     # Parameter:sensor_names
@@ -210,14 +211,39 @@ class SimulatorUI(ctk.CTk):
     # Parameter:topic,payload
     # return:None
     def on_sensor_data_received(self, topic, payload):
-        data = json.loads(payload)
+    
+        try:
+            data = json.loads(payload)
+        except Exception as e:
+            print(f"Error decoding JSON payload: {e}")
+            return
         sensor_name = data.get("sensor_name")
+        if not sensor_name:
+            return
+
+        # Retrieve sensor field readings from the payload
         sensor_values = data.get("data", {})
 
+        # Update sensor field labels
         for field, value in sensor_values.items():
             label_key = (sensor_name, field)
             if label_key in self.left_sensor_labels:
                 self.update_label(label_key, value)
+
+      
+        if sensor_name in self.sensor_configs:
+            current_battery_state = self.sensor_configs[sensor_name]["battery_var"].get()
+            if current_battery_state:
+               if sensor_values:
+                    inferred_battery = not all(v == 0 for v in sensor_values.values())
+               else:
+                    inferred_battery = True  # If no sensor values, assume battery remains on
+               self.sensor_configs[sensor_name]["battery_var"].set(inferred_battery)
+               battery_label_key = (sensor_name, "Battery")
+               if battery_label_key in self.left_sensor_labels:
+                    self.update_label(battery_label_key, "On" if inferred_battery else "Off")
+
+
 
     # function name:update_label
     # Description:This function is used to update the sensor reading label
