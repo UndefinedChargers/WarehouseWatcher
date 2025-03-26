@@ -19,7 +19,8 @@ class thermostat(BaseSensor):
 
     def __init__(self,sensor_name,drain_cycle,set_temp):
         super().__init__(sensor_name,drain_cycle)
-        # self.temp_range=temp_range
+        # self.temp_range=temp_rang
+        self.default_temperature=set_temp
         self.set_temperature=set_temp
         logger.info(f"ThermostatSensor initialized: {self.sensor_name} | ID: {self.sensor_id}",file="./Logs/sensorLogs.log")
             
@@ -49,7 +50,7 @@ class thermostat(BaseSensor):
         self.set_temperature-=1.0
         logger.info(f"Manual temperature Decremented for {self.sensor_name} to {self.set_temperature}",file="./Logs/sensorLogs.log")  
     
-    
+   
     # function name:generate_sensor_data(self)
     # Description:This function is used to set the data packets to send
     # Parameter:void:self

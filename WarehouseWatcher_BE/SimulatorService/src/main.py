@@ -68,7 +68,6 @@ def on_control_message(client, userdata, msg):
                   sensor.set_battery_UI=False
 
               logger.info(f"[CONTROL] Battery for {sensor_name} set to {sensor.battery}")
-
             #  increase data functions
             elif action == "increase_data":
                 field = payload.get("field")
@@ -76,7 +75,7 @@ def on_control_message(client, userdata, msg):
                 if field == "Data" and hasattr(sensor, "set_increment_temp_one"):
                     
                     sensor.set_increment_temp_one()
-                    logger.info(f"[CONTROL] Increased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                    logger.info(f"[CONTROL] Increased Temperature for {sensor_name} to {sensor.set_temperature}")
                 elif field=="PM2.5" and hasattr(sensor,"set_increment_pm_five"):
                     sensor.set_increment_pm_five()
                     logger.info(f"[CONTROL] Increased PM for {sensor_name} to {sensor.setPm25}")
@@ -98,7 +97,7 @@ def on_control_message(client, userdata, msg):
                 field = payload.get("field")
                 if field == "Data" and hasattr(sensor, "set_decrement_temp_one"):
                     sensor.set_decrement_temp_one()
-                    logger.info(f"[CONTROL] Decreased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                    logger.info(f"[CONTROL] Decreased Temperature for {sensor_name} to {sensor.set_temperature}")
                 
                 elif field=="PM2.5" and hasattr(sensor,"set_decrement_pm_five"):
                     sensor.set_decrement_pm_five()

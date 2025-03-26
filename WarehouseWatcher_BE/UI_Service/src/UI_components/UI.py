@@ -31,7 +31,7 @@ class SimulatorUI(ctk.CTk):
         self.mqtt_handler = None
         self.left_sensor_labels = {}
         self.setup_UI(sensor_names)
-        
+
     # function name:setup_UI
     # Description:This function is used to set up of the setup_UI
     # Parameter:sensor_names
@@ -86,13 +86,24 @@ class SimulatorUI(ctk.CTk):
     # Parameter: void:self
     # return:
     def load_env_credentials(self):
-        load_dotenv()
+        try:
+            load_dotenv()
+        except Exception as e:
+            self.conn_status_label.configure(text=f"Error loading .env file: {e}", text_color="red")
+            return
+        host = os.getenv("HIVEMQ_HOST")
+        user = os.getenv("HIVEMQ_USER")
+        password = os.getenv("HIVEMQ_PASS")
+
+        if not host or not user or not password:
+            self.conn_status_label.configure(text="Error: .env file missing required credentials", text_color="red")
+            return
         self.host_entry.delete(0, "end")
         self.user_entry.delete(0, "end")
         self.pass_entry.delete(0, "end")
-        self.host_entry.insert(0, os.getenv("HIVEMQ_HOST", ""))
-        self.user_entry.insert(0, os.getenv("HIVEMQ_USER", ""))
-        self.pass_entry.insert(0, os.getenv("HIVEMQ_PASS", ""))
+        self.host_entry.insert(0, host)
+        self.user_entry.insert(0, user)
+        self.pass_entry.insert(0, password)
 
     # function name:connect_to_mqtt
     # Description:This function basically contain the functionality to connect to the mqtt  
@@ -170,10 +181,10 @@ class SimulatorUI(ctk.CTk):
                 lbl = ctk.CTkLabel(sensor_frame, text=f"{field_name}:", font=("Arial", 12))
                 lbl.grid(row=data_field_row, column=0, padx=5, pady=5, sticky="e")
 
-                up_btn = ctk.CTkButton(sensor_frame,text="UP",command=lambda s=sensor_name, f=field_name: self.adjust_data(s, f, "up"))
+                up_btn = ctk.CTkButton(sensor_frame,text="Up",command=lambda s=sensor_name, f=field_name: self.adjust_data(s, f, "up"))
                 up_btn.grid(row=data_field_row, column=1, padx=5, pady=5, sticky="w")
 
-                down_btn = ctk.CTkButton(sensor_frame,text="DOWN",command=lambda s=sensor_name, f=field_name: self.adjust_data(s, f, "down"))
+                down_btn = ctk.CTkButton(sensor_frame,text="Down",command=lambda s=sensor_name, f=field_name: self.adjust_data(s, f, "down"))
                 down_btn.grid(row=data_field_row, column=2, padx=5, pady=5, sticky="w")
 
                 data_field_row += 1
@@ -266,6 +277,5 @@ class SimulatorUI(ctk.CTk):
     def on_battery_switch_toggled(self, sensor_name):
       
         is_on = self.sensor_configs[sensor_name]["battery_var"].get()
-        # on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler,sensor_data_manager=self.sensor_data_manager,msg_display=self.msg_display)
         on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler)
         
