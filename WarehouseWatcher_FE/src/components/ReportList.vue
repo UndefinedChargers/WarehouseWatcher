@@ -75,10 +75,10 @@ const sensordataStore = useSensorDataStore();
 // console.log(sensordata);
 // Sample report data => replace with queried data later
 const reportData = ref([
-  { name: '2025-03-12 8:00', value: 'Temperature: 22°C' },
-  { name: '2025-03-13 8:00', value: 'Temperature: 22°C' },
-  { name: '2025-03-14 8:00', value: 'Temperature: 22°C' },
-  { name: '2025-03-15 8:00', value: 'Temperature: 22°C' },
+  { timestamp: '2025-03-12 8:00', value: 'Temperature: 22°C' },
+  { timestamp: '2025-03-13 8:00', value: 'Temperature: 22°C' },
+  { timestamp: '2025-03-14 8:00', value: 'Temperature: 22°C' },
+  { timestamp: '2025-03-15 8:00', value: 'Temperature: 22°C' },
 ]);
 
 sensordataStore.$subscribe((mutation, state) => {
@@ -90,8 +90,8 @@ sensordataStore.$subscribe((mutation, state) => {
 })
 
 const formatDataToCSV = (data) => {
-  const headers = ['Date', 'Temperature'];
-  const rows = data.map(item => [item.name, item.value]);
+  const headers = ['Timestamp', 'Value'];
+  const rows = data.map(item => [item.time, item.data_values]);
 
   let csvContent = 'data:text/csv;charset=utf-8,';
   csvContent += headers.join(',') + '\n'; 
@@ -122,7 +122,7 @@ const downloadPDF = () => {
   y += 10;
   
   reportData.value.forEach(item => {
-    doc.text(`${item.name}: ${item.value}`, 10, y);
+    doc.text(`${item.time}: ${item.data_values}`, 10, y);
     y += 10;
   });
   
@@ -130,7 +130,12 @@ const downloadPDF = () => {
 };
 
 const downloadExcel = () => {
-  const ws = utils.json_to_sheet(reportData.value);
+  const structuredData = reportData.value.map(item => ({
+    Timestamp: item.time,
+    Value: item.data_values
+  }));
+
+  const ws = utils.json_to_sheet(structuredData);
   const wb = utils.book_new();
   utils.book_append_sheet(wb, ws, 'Report');
   writeFile(wb, 'report.xlsx');
