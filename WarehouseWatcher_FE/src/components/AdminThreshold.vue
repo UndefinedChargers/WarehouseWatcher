@@ -33,6 +33,33 @@ const loadSavedThresholds = () => {
   });
 };
 
+// Update Grafana Thresholds
+const updateGrafana = async (id, min, max) => {
+  console.log("Sending request to Flask:", id, min, max); 
+  try {
+    const response = await fetch("http://127.0.0.1:5000/grafana_threshold_update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sensor_id: id,
+        min_value: min,
+        max_value: max
+      }),
+    });
+    console.log("Response status:", response.status);
+
+    const grafanaResponse = await response.json();
+
+    if (!response.ok) {
+      alert(`Error: ${grafanaResponse.error}`);
+    }
+
+  } catch (error) {
+    console.error("Fetch failed: ", error); 
+    alert(`Grafana threshold update failed: ${error.message}`);
+  }
+}
+
 // Update single threshold
 const updateConfigs = (sensor, type) => {
   const value = type === "min" ? sensor.min_value : sensor.max_value;
@@ -46,12 +73,16 @@ const updateConfigs = (sensor, type) => {
 
   // Save updated threshold to the store
   objectConfig.setThreshold(sensor.id, sensor.min_value, sensor.max_value);
+  // Need to send update request to GrafanaService backend
+  updateGrafana(sensor.id, sensor.min_value, sensor.max_value)
 };
 
 // Save all thresholds at once
 const saveAllThresholds = () => {
   thresholds.value.forEach(sensor => {
     objectConfig.setThreshold(sensor.id, sensor.min_value, sensor.max_value);
+    // Need to send update request to GrafanaService backend
+    updateGrafana(sensor.id, sensor.min_value, sensor.max_value)
   });
   alert("All thresholds have been saved successfully!");
 };

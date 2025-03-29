@@ -5,6 +5,7 @@
 
 import os
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
 
@@ -13,6 +14,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
+CORS(app, origins=["http://localhost:5173"])
 
 # Authorization token in header
 headers = {
@@ -57,8 +59,8 @@ def determineThresholds():
     print(f"Data from frontend: {threshold_data}")
 
     sensor_id = threshold_data.get("sensor_id")
-    range_min = threshold_data.get("range_min")
-    range_max = threshold_data.get("range_max")
+    range_min = threshold_data.get("min_value")
+    range_max = threshold_data.get("max_value")
 
     #   Determine which thresholds to change in POST and execute
     if sensor_id == SENSOR1_TEMP:
@@ -79,6 +81,8 @@ def determineThresholds():
         print("sensor_id incorrect.")
     else:
         print(f"Status Code: {post_response.status_code}, Response Text: {post_response.text}")
+
+    return post_response
 
 
 def postSensor1Temp(min, max):
@@ -200,4 +204,4 @@ def postSensor1Humidity(min, max):
 
 #   Main app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
