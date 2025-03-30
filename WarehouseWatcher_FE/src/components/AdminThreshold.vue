@@ -3,9 +3,9 @@
  PROJECT: Warehouse Watcher
  PROGRAMMER: Undefined Chargers - Aryan Passi
  FIRST VERSION: 2025-03-09
- -->
- 
- <script setup>
+-->
+
+<script setup>
  import { ref, onMounted } from "vue";
  import { useAppConfigsStore } from "@/stores/appConfigsStore";
  
