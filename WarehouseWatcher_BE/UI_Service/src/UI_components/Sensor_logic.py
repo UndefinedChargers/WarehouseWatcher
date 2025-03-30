@@ -47,6 +47,11 @@ def adjust_data_one(sensor_name, field_name, direction, mqtt_handler):
     #     msg_display.insert("end", log_line)
     #     msg_display.see("end")
 
+
+
+       
+
+
     
 
 
