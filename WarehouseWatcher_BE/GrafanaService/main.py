@@ -9,7 +9,6 @@ from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 app = Flask(__name__)
@@ -22,13 +21,14 @@ headers = {
     "Content-Type": "application/json"
 }
 
+PORT = int(os.getenv("PORT"))
 #   Set grafana dashboard urls
 DASHBOARD_ENERGY_2DAYS = os.getenv("DASHBOARD_ENERGY_2DAYS")
 DASHBOARD_ENERGY_30DAYS = os.getenv("DASHBOARD_ENERGY_30DAYS")
 DASHBOARD_ENV_REALTIME = os.getenv("DASHBOARD_ENV_REALTIME")
 DASHBOARD_ENV_1HOUR = os.getenv("DASHBOARD_ENV_1HOUR")
 DASHBOARD_ENV_30DAYS = os.getenv("DASHBOARD_ENV_30DAYS")
-DASHBOARD_PUT_URL = os.getenv("DASHBOARD_PUT_URL")
+DASHBOARD_POST_URL = os.getenv("DASHBOARD_POST_URL")
 #   Set sensor ids
 SENSOR1_TEMP = os.getenv("SENSOR1_TEMP")
 SENSOR2_TEMP = os.getenv("SENSOR2_TEMP")
@@ -46,140 +46,95 @@ PANEL_SENSOR1_HUMIDITY_REALTIME = int(os.getenv("PANEL_SENSOR1_HUMIDITY_REALTIME
 PANEL_SENSOR1_HUMIDITY_1HOUR = int(os.getenv("PANEL_SENSOR1_HUMIDITY_1HOUR"))
 PANEL_SENSOR1_HUMIDITY_30DAYS = int(os.getenv("PANEL_SENSOR1_HUMIDITY_30DAYS"))
 
-
 #   Function:       updateThresholds
 #   Description:    Gets new threshold data on a single sensor from the front end.
 #                   Sends the data to the right post method
 #
 #   This is the route for the front-end to use to update thresholds
 @app.route('/grafana_threshold_update', methods=['POST'])
-def determineThresholds():
+def updateThresholds():
     #   Get threshold data from the frontend
     threshold_data = request.json
-    print(f"Data from frontend: {threshold_data}")
-
     sensor_id = threshold_data.get("sensor_id")
     range_min = threshold_data.get("min_value")
     range_max = threshold_data.get("max_value")
 
-    print(f"Updating sensor {sensor_id} with min={range_min}, max={range_max}")
-
     #   Determine which thresholds to change in POST and execute
+    post_response = []
     if sensor_id == SENSOR1_TEMP:
-        post_response = postSensor1Temp(range_min, range_max)
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
+                                                      PANEL_SENSOR1_TEMP_ENV_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR2_TEMP:
-        post_response = postSensor2Temp(range_min, range_max)
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
+                                                      PANEL_SENSOR2_TEMP_ENV_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR3_TEMP:
-        post_response = postSensor3Temp(range_min, range_max)
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
+                                                      PANEL_SENSOR3_TEMP_ENV_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR1_AIR:
-        post_response = postSensor1Air(range_min, range_max)
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
+                                                      PANEL_SENSOR1_AIR_ENV_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_1HOUR, 
+                                                      PANEL_SENSOR1_AIR_ENV_1HOUR, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_30DAYS, 
+                                                      PANEL_SENSOR1_AIR_ENV_30DAYS, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR1_HUMIDITY:
-        post_response = postSensor1Humidity(range_min, range_max)
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
+                                                      PANEL_SENSOR1_HUMIDITY_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_1HOUR, 
+                                                      PANEL_SENSOR1_HUMIDITY_1HOUR, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_30DAYS, 
+                                                      PANEL_SENSOR1_HUMIDITY_30DAYS, 
+                                                      range_min, 
+                                                      range_max))
     else:
-        post_response = None
-        print("Real, sensor_id incorrect")
-
-    print(f"Grafana response: {post_response.status_code}, {post_response.text}")
-
-    #   Just debugging info
-    if post_response == None:
+        post_response = []
+        print("sensor_id incorrect.")
+    
+    #   No response from post functions, exit
+    if post_response == []:
         print("sensor_id incorrect.")
         return jsonify({"error": "Invalid sensor_id"}), 400 
+    
+    #   Package all responses into one JSON to send to frontend
+    data = [
+        {"status_code": response.status_code, "response_text": response.text}
+        for response in post_response
+    ]
 
-    return jsonify({
-        "status_code": post_response.status_code,
-        "response_text": post_response.text
-    }), post_response.status_code
+    return jsonify({"data": data}), post_response[0].status_code
 
-
-def postSensor1Temp(min, max):
+#   Function:       postPanelThresholdChange
+#   Description:    Sends a POST to the grafana API to update the panel on the 
+#                   given dashboard the new min and max threshold values.
+def postPanelThresholdChange(dashboardURL, panelID, min, max):
     #   Get Dashboard data 
-    get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
+    get_response = requests.get(dashboardURL, headers=headers, verify=False)
 
+    #   If dashboard request is good, filter to panel data and update threshold data
     if get_response.status_code == 200:
         try: 
             dashboardData = get_response.json()
 
             panelData = dashboardData.get('dashboard', {}).get('panels', [])
-            #   Drill down to thresholds on a specific panel
+            #   Drill down to thresholds on a specific panel, it's thresholds JSON 
             for panel in panelData:
-                if panel.get("id") == PANEL_SENSOR1_TEMP_ENV_REALTIME:
-                    if 'fieldConfig' in panel and 'defaults' in panel['fieldConfig']:
-                        panel['fieldConfig']['defaults']['thresholds'] = {
-                            "mode": "absolute",
-                            "steps": [
-                                {"color": "red", "value": None},
-                                {"color": "green", "value": min},
-                                {"color": "red", "value": max}
-                            ]
-                    }  
-                    print("Updated thresholds:", panel['fieldConfig']['defaults']['thresholds'])    
-                    
-
-             #   Need to update the version and set to overwrite for the api to work
-            dashboardData["dashboard"]["version"] += 1
-            payload = {
-                "dashboard": dashboardData["dashboard"],
-                "overwrite": True
-            }
-
-            #   Send POST
-            return requests.post(DASHBOARD_PUT_URL, headers=headers, json=payload, verify=False)
-
-        except ValueError:
-            return get_response.text
-    else:
-        return "Failure", 400
-
-def postSensor2Temp(min, max):
-    #   Get Dashboard data 
-    get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
-
-    if get_response.status_code == 200:
-        try: 
-            dashboardData = get_response.json()
-
-            panelData = dashboardData.get('dashboard', {}).get('panels', [])
-            #   Drill down to thresholds on a specific panel
-            for panel in panelData:
-                if panel.get("id") == PANEL_SENSOR2_TEMP_ENV_REALTIME:
-                    if 'fieldConfig' in panel and 'defaults' in panel['fieldConfig']:
-                        panel['fieldConfig']['defaults']['thresholds'] = {
-                            "mode": "absolute",
-                            "steps": [
-                                {"color": "red", "value": None},
-                                {"color": "green", "value": min},
-                                {"color": "red", "value": max}
-                            ]
-                    }  
-
-            #   Need to update the version and set to overwrite for the api to work
-            dashboardData["dashboard"]["version"] += 1
-            payload = {
-                "dashboard": dashboardData["dashboard"],
-                "overwrite": True
-            }
-
-            #   Send POST
-            return requests.post(DASHBOARD_PUT_URL, headers=headers, json=payload, verify=False)
-
-        except ValueError:
-            return get_response.text
-    else:
-        return "Failure", 400
-
-def postSensor3Temp(min, max):
-    #   Get Dashboard data 
-    get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
-
-    if get_response.status_code == 200:
-        try: 
-            dashboardData = get_response.json()
-
-            panelData = dashboardData.get('dashboard', {}).get('panels', [])
-            #   Drill down to thresholds on a specific panel
-            for panel in panelData:
-                if panel.get("id") == PANEL_SENSOR3_TEMP_ENV_REALTIME:
+                if panel.get("id") == panelID:
                     if 'fieldConfig' in panel and 'defaults' in panel['fieldConfig']:
                         panel['fieldConfig']['defaults']['thresholds'] = {
                             "mode": "absolute",
@@ -198,19 +153,13 @@ def postSensor3Temp(min, max):
             }
 
             #   Send POST
-            return requests.post(DASHBOARD_PUT_URL, headers=headers, json=payload, verify=False)
+            return requests.post(DASHBOARD_POST_URL, headers=headers, json=payload, verify=False)
 
         except ValueError:
             return get_response.text
     else:
-        return "Failure", 400
-
-def postSensor1Air(min, max):
-    return
-
-def postSensor1Humidity(min, max):
-    return
+        return jsonify({"error": "failed to post panel change."}), 400 
 
 #   Main app
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=PORT)
