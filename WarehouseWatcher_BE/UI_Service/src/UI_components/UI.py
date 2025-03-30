@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 import os
 from .Sensor_logic import on_off_battery_switch,adjust_data_one
 from .mqtt_handler import MQTTHandler
+import sys
+from tkinter import PhotoImage  # Needed for iconphoto fallback
 
 
 FIELDS_PER_SENSOR = {
@@ -25,7 +27,28 @@ class SimulatorUI(ctk.CTk):
         super().__init__()
         self.title("Warehouse Watcher Simulator UI")
         self.geometry("1050x650")
-        self.iconbitmap("./assets/favicon.ico")
+
+         # Locate the icon file using the helper function
+        icon_path = resource_path("assets/favicon.ico")
+        try:
+            # Try setting the icon using iconbitmap (works on Windows)
+            self.iconbitmap(icon_path)
+        except Exception as e:
+            print(f"iconbitmap failed: {e}. Trying iconphoto fallback...")
+            try:
+                icon_img = PhotoImage(file=icon_path)
+                self.iconphoto(False, icon_img)
+            except Exception as e2:
+                print(f"Fallback icon load failed: {e2}")
+
+
+
+
+
+
+
+
+        # self.iconbitmap("./assets/favicon.ico")
         self.sensor_configs = {}
         self.sensor_names = sensor_names
         self.mqtt_handler = None
@@ -279,3 +302,10 @@ class SimulatorUI(ctk.CTk):
         is_on = self.sensor_configs[sensor_name]["battery_var"].get()
         on_off_battery_switch(sensor_name=sensor_name,is_on=is_on,mqtt_handler=self.mqtt_handler)
         
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
