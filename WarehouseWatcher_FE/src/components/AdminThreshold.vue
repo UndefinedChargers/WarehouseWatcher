@@ -51,10 +51,16 @@
  };
 
   // Update Grafana Thresholds
-  const updateGrafana = async (id, min, max, member, value) => {
+  const updateGrafana = async (id, min, max, curMin, curMax, member, value) => {
     //  Parse min and max threshold values
-    if (member == "min_threshold") min = value;
-    else if (member == "max_threshold") max = value;  
+    if (member == "min_threshold") {
+      min = value;
+      max = curMax;
+    } 
+    else if (member == "max_threshold") {
+      min = curMin;
+      max = value; 
+    }
 
     //  Send to backend grafana service
     console.log(`Sending to GrafanaService: ${id} ${min} ${max}`);
@@ -95,7 +101,7 @@
    }
 
    objectConfig.setObjectMemberValue(sensor.id, member, value);
-   updateGrafana(sensor.id, sensor.min, sensor.max, member, value);
+   updateGrafana(sensor.id, sensor.min, sensor.max, sensor.current_min, sensor.current_max, member, value);
  };
  
  // Save all thresholds at once

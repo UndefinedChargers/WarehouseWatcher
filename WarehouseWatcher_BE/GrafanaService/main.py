@@ -93,10 +93,9 @@ def determineThresholds():
 
 
 def postSensor1Temp(min, max):
+    
     #   Get Dashboard data 
     get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
-
-    
 
     if get_response.status_code == 200:
         try: 
