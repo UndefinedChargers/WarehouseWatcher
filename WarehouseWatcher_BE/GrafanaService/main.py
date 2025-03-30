@@ -62,6 +62,8 @@ def determineThresholds():
     range_min = threshold_data.get("min_value")
     range_max = threshold_data.get("max_value")
 
+    print(f"Updating sensor {sensor_id} with min={range_min}, max={range_max}")
+
     #   Determine which thresholds to change in POST and execute
     if sensor_id == SENSOR1_TEMP:
         post_response = postSensor1Temp(range_min, range_max)
@@ -75,19 +77,26 @@ def determineThresholds():
         post_response = postSensor1Humidity(range_min, range_max)
     else:
         post_response = None
+        print("Real, sensor_id incorrect")
+
+    print(f"Grafana response: {post_response.status_code}, {post_response.text}")
 
     #   Just debugging info
     if post_response == None:
         print("sensor_id incorrect.")
-    else:
-        print(f"Status Code: {post_response.status_code}, Response Text: {post_response.text}")
+        return jsonify({"error": "Invalid sensor_id"}), 400 
 
-    return post_response
+    return jsonify({
+        "status_code": post_response.status_code,
+        "response_text": post_response.text
+    }), post_response.status_code
 
 
 def postSensor1Temp(min, max):
     #   Get Dashboard data 
     get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
+
+    
 
     if get_response.status_code == 200:
         try: 
@@ -96,7 +105,7 @@ def postSensor1Temp(min, max):
             panelData = dashboardData.get('dashboard', {}).get('panels', [])
             #   Drill down to thresholds on a specific panel
             for panel in panelData:
-                if panel.get("id") == PANEL_SENSOR1_TEMP_ENV_REALTIME:
+                if panel.get("id") == 8:
                     if 'fieldConfig' in panel and 'defaults' in panel['fieldConfig']:
                         panel['fieldConfig']['defaults']['thresholds'] = {
                             "mode": "absolute",
@@ -106,6 +115,8 @@ def postSensor1Temp(min, max):
                                 {"color": "red", "value": max}
                             ]
                     }  
+                    print("Updated thresholds:", panel['fieldConfig']['defaults']['thresholds'])    
+                    
 
              #   Need to update the version and set to overwrite for the api to work
             dashboardData["dashboard"]["version"] += 1
