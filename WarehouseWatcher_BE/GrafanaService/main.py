@@ -36,15 +36,15 @@ SENSOR3_TEMP = os.getenv("SENSOR3_TEMP")
 SENSOR1_AIR = os.getenv("SENSOR1_AIR")
 SENSOR1_HUMIDITY = os.getenv("SENSOR1_HUMIDITY")
 #   Set dashboard panel ids
-PANEL_SENSOR1_TEMP_ENV_REALTIME = os.getenv("PANEL_SENSOR1_TEMP_ENV_REALTIME")
-PANEL_SENSOR2_TEMP_ENV_REALTIME = os.getenv("PANEL_SENSOR2_TEMP_ENV_REALTIME")
-PANEL_SENSOR3_TEMP_ENV_REALTIME = os.getenv("PANEL_SENSOR3_TEMP_ENV_REALTIME")
-PANEL_SENSOR1_AIR_ENV_REALTIME = os.getenv("PANEL_SENSOR1_AIR_ENV_REALTIME")
-PANEL_SENSOR1_AIR_ENV_1HOUR = os.getenv("PANEL_SENSOR1_AIR_ENV_1HOUR")
-PANEL_SENSOR1_AIR_ENV_30DAYS = os.getenv("PANEL_SENSOR1_AIR_ENV_30DAYS")
-PANEL_SENSOR1_HUMIDITY_REALTIME = os.getenv("PANEL_SENSOR1_HUMIDITY_REALTIME")
-PANEL_SENSOR1_HUMIDITY_1HOUR = os.getenv("PANEL_SENSOR1_HUMIDITY_1HOUR")
-PANEL_SENSOR1_HUMIDITY_30DAYS = os.getenv("PANEL_SENSOR1_HUMIDITY_30DAYS")
+PANEL_SENSOR1_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR1_TEMP_ENV_REALTIME"))
+PANEL_SENSOR2_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR2_TEMP_ENV_REALTIME"))
+PANEL_SENSOR3_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR3_TEMP_ENV_REALTIME"))
+PANEL_SENSOR1_AIR_ENV_REALTIME = int(os.getenv("PANEL_SENSOR1_AIR_ENV_REALTIME"))
+PANEL_SENSOR1_AIR_ENV_1HOUR = int(os.getenv("PANEL_SENSOR1_AIR_ENV_1HOUR"))
+PANEL_SENSOR1_AIR_ENV_30DAYS = int(os.getenv("PANEL_SENSOR1_AIR_ENV_30DAYS"))
+PANEL_SENSOR1_HUMIDITY_REALTIME = int(os.getenv("PANEL_SENSOR1_HUMIDITY_REALTIME"))
+PANEL_SENSOR1_HUMIDITY_1HOUR = int(os.getenv("PANEL_SENSOR1_HUMIDITY_1HOUR"))
+PANEL_SENSOR1_HUMIDITY_30DAYS = int(os.getenv("PANEL_SENSOR1_HUMIDITY_30DAYS"))
 
 
 #   Function:       updateThresholds
@@ -93,7 +93,6 @@ def determineThresholds():
 
 
 def postSensor1Temp(min, max):
-    
     #   Get Dashboard data 
     get_response = requests.get(DASHBOARD_ENV_REALTIME, headers=headers, verify=False)
 
@@ -104,7 +103,7 @@ def postSensor1Temp(min, max):
             panelData = dashboardData.get('dashboard', {}).get('panels', [])
             #   Drill down to thresholds on a specific panel
             for panel in panelData:
-                if panel.get("id") == 8:
+                if panel.get("id") == PANEL_SENSOR1_TEMP_ENV_REALTIME:
                     if 'fieldConfig' in panel and 'defaults' in panel['fieldConfig']:
                         panel['fieldConfig']['defaults']['thresholds'] = {
                             "mode": "absolute",
