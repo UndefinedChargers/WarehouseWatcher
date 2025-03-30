@@ -43,7 +43,7 @@ def main():
 
     sensor_names = config.get("sensor_names", [])
     
-    app = SimulatorUI(sensor_names, host, user, password)
+    app = SimulatorUI(sensor_names)
     app.mainloop()
 
 if __name__ == "__main__":

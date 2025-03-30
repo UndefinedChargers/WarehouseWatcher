@@ -18,11 +18,6 @@ user =os.getenv("HIVEMQ_USER")
 password = os.getenv("HIVEMQ_PASS")
 host = os.getenv("HIVEMQ_HOST")
 
-# TOPICS={
-#     "thermostat": "Waterloo/Warehouse/Thermostat/",
-#     "AirQualitySensor":"Waterloo/Warehouse/AirQualitySensor/"
-
-# }
 
 # format for sensors
 # location :thermostat(sensor_name,temp_range,drain_cycle)
@@ -73,15 +68,14 @@ def on_control_message(client, userdata, msg):
                   sensor.set_battery_UI=False
 
               logger.info(f"[CONTROL] Battery for {sensor_name} set to {sensor.battery}")
-
             #  increase data functions
             elif action == "increase_data":
                 field = payload.get("field")
 
-                if field == "Temperature" and hasattr(sensor, "set_increment_temp_one"):
+                if field == "Data" and hasattr(sensor, "set_increment_temp_one"):
                     
                     sensor.set_increment_temp_one()
-                    logger.info(f"[CONTROL] Increased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                    logger.info(f"[CONTROL] Increased Temperature for {sensor_name} to {sensor.set_temperature}")
                 elif field=="PM2.5" and hasattr(sensor,"set_increment_pm_five"):
                     sensor.set_increment_pm_five()
                     logger.info(f"[CONTROL] Increased PM for {sensor_name} to {sensor.setPm25}")
@@ -101,9 +95,9 @@ def on_control_message(client, userdata, msg):
             elif action == "decrease_data":
                 
                 field = payload.get("field")
-                if field == "Temperature" and hasattr(sensor, "set_decrement_temp_one"):
+                if field == "Data" and hasattr(sensor, "set_decrement_temp_one"):
                     sensor.set_decrement_temp_one()
-                    logger.info(f"[CONTROL] Decreased Temperature for {sensor_name} to {sensor.manual_temperature}")
+                    logger.info(f"[CONTROL] Decreased Temperature for {sensor_name} to {sensor.set_temperature}")
                 
                 elif field=="PM2.5" and hasattr(sensor,"set_decrement_pm_five"):
                     sensor.set_decrement_pm_five()
@@ -146,6 +140,15 @@ def publish_data(client):
          "sensor_name":sensor_name,
          "data":final_result
       }
+      # changes for the battery
+    # If battery is 0 or battery has been disabled via UI
+      if hasattr(sensor_instance, "battery") and (sensor_instance.battery == 0 or getattr(sensor_instance, "set_battery_UI", False)):final_result = {key: 0 for key in final_result}
+      logger.warning("Battery dead!!!!!!!!!!")
+      sensor_Data = {
+                "sensor_name": sensor_name,
+                "data": final_result
+            }
+
       sensor_type = sensor_instance.__class__.__name__ 
       theTopic = f"Waterloo/Warehouse/{sensor_type}/{sensor_name}"
       payload = json.dumps(sensor_Data)
