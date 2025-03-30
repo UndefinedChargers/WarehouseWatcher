@@ -37,8 +37,14 @@ SENSOR1_AIR = os.getenv("SENSOR1_AIR")
 SENSOR1_HUMIDITY = os.getenv("SENSOR1_HUMIDITY")
 #   Set dashboard panel ids
 PANEL_SENSOR1_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR1_TEMP_ENV_REALTIME"))
+PANEL_SENSOR1_TEMP_ENV_1HOUR = int(os.getenv("PANEL_SENSOR1_TEMP_ENV_1HOUR"))
+PANEL_SENSOR1_TEMP_ENV_30DAYS = int(os.getenv("PANEL_SENSOR1_TEMP_ENV_30DAYS"))
 PANEL_SENSOR2_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR2_TEMP_ENV_REALTIME"))
+PANEL_SENSOR2_TEMP_ENV_1HOUR = int(os.getenv("PANEL_SENSOR2_TEMP_ENV_1HOUR"))
+PANEL_SENSOR2_TEMP_ENV_30DAYS = int(os.getenv("PANEL_SENSOR2_TEMP_ENV_30DAYS"))
 PANEL_SENSOR3_TEMP_ENV_REALTIME = int(os.getenv("PANEL_SENSOR3_TEMP_ENV_REALTIME"))
+PANEL_SENSOR3_TEMP_ENV_1HOUR = int(os.getenv("PANEL_SENSOR3_TEMP_ENV_1HOUR"))
+PANEL_SENSOR3_TEMP_ENV_30DAYS = int(os.getenv("PANEL_SENSOR3_TEMP_ENV_30DAYS"))
 PANEL_SENSOR1_AIR_ENV_REALTIME = int(os.getenv("PANEL_SENSOR1_AIR_ENV_REALTIME"))
 PANEL_SENSOR1_AIR_ENV_1HOUR = int(os.getenv("PANEL_SENSOR1_AIR_ENV_1HOUR"))
 PANEL_SENSOR1_AIR_ENV_30DAYS = int(os.getenv("PANEL_SENSOR1_AIR_ENV_30DAYS"))
@@ -66,14 +72,38 @@ def updateThresholds():
                                                       PANEL_SENSOR1_TEMP_ENV_REALTIME, 
                                                       range_min, 
                                                       range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_1HOUR, 
+                                                      PANEL_SENSOR1_TEMP_ENV_1HOUR, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_30DAYS, 
+                                                      PANEL_SENSOR1_TEMP_ENV_30DAYS, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR2_TEMP:
         post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
                                                       PANEL_SENSOR2_TEMP_ENV_REALTIME, 
                                                       range_min, 
                                                       range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_1HOUR, 
+                                                      PANEL_SENSOR2_TEMP_ENV_1HOUR, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_30DAYS, 
+                                                      PANEL_SENSOR2_TEMP_ENV_30DAYS, 
+                                                      range_min, 
+                                                      range_max))
     elif sensor_id == SENSOR3_TEMP:
         post_response.append(postPanelThresholdChange(DASHBOARD_ENV_REALTIME, 
                                                       PANEL_SENSOR3_TEMP_ENV_REALTIME, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_1HOUR, 
+                                                      PANEL_SENSOR3_TEMP_ENV_1HOUR, 
+                                                      range_min, 
+                                                      range_max))
+        post_response.append(postPanelThresholdChange(DASHBOARD_ENV_30DAYS, 
+                                                      PANEL_SENSOR3_TEMP_ENV_30DAYS, 
                                                       range_min, 
                                                       range_max))
     elif sensor_id == SENSOR1_AIR:
