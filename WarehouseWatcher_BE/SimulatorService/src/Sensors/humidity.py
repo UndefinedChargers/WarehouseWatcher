@@ -15,7 +15,8 @@ from loguru import logger
 class HumiditySensor(BaseSensor):
     def __init__(self, sensor_name, thermostat_sensor, humidity_range=(20, 90), drain_cycle=100):
         super().__init__(sensor_name, drain_cycle)
-        self.setHumid=45
+        self.setHumid=45.0
+        print(type(self.setHumid))
         # Ensure humidity_range is always a valid two-element tuple
         if isinstance(humidity_range, (list, tuple)) and len(humidity_range) == 2:
             self.humidity_range = (float(humidity_range[0]), float(humidity_range[1]))

@@ -40,7 +40,8 @@ class thermostat(BaseSensor):
     # Parameter:void:
     # return:int number:battery.
     def set_increment_temp_one(self):
-        self.set_temperature+=1.0
+        # self.set_temperature+=1.0
+        self.set_temperature=round(self.set_temperature+1.0,2)
         logger.info(f"Manual temperature incremented for {self.sensor_name} to {self.set_temperature}",file="./Logs/sensorLogs.log")
         
     # function name:set_decrement_temp_one
@@ -48,7 +49,8 @@ class thermostat(BaseSensor):
     # Parameter:void:
     # return:int number:battery.
     def set_decrement_temp_one(self):
-        self.set_temperature-=1.0
+        # self.set_temperature-=1.0
+        self.set_temperature=round(self.set_temperature-1.0,2)
         logger.info(f"Manual temperature Decremented for {self.sensor_name} to {self.set_temperature}",file="./Logs/sensorLogs.log") 
     
    
