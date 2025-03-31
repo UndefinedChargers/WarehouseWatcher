@@ -1,13 +1,10 @@
-// Import the functions you need from the SDKs you need
+// Import necessary Firebase and Vue functions
 import { initializeApp } from "firebase/app";
-//import { getAnalytics } from "firebase/analytics";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { ref } from "vue";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -20,13 +17,31 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-//const analytics = getAnalytics(app);
 const auth = getAuth(app);
+const db = getFirestore();
 
+// Reactive user state
 const user = ref(null);
+const isAdmin = ref(false);
 
-onAuthStateChanged(auth, (currentUser) => {
-  user.value = currentUser;
+async function checkIfAdmin(user) {
+    if (!user) return false;
+
+    try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        return userDoc.exists(); 
+    } catch (error) {
+        console.error("Error checking admin status:", error);
+        return false;
+    }
+}
+
+onAuthStateChanged(auth, async (currentUser) => {
+    user.value = currentUser; 
+    isAdmin.value = currentUser ? await checkIfAdmin(currentUser) : false;
+    console.log(user.value ? `Logged in as ${user.value.email}` : "No user logged in.");
+    console.log(isAdmin.value ? "User is an admin" : "User is a regular user");
 });
 
-export { auth, user };
+// Export reactive variables
+export { auth, db, user, isAdmin };

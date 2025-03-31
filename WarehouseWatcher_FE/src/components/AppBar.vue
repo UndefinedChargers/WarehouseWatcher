@@ -27,7 +27,7 @@
       <v-btn v-if="user" @click="$router.push({path:'/compliance'})">
         Report
       </v-btn>
-      <v-btn v-if="user" @click="$router.push({path:'/admin'})">
+      <v-btn v-if="isAdmin" @click="$router.push({path:'/admin'})">
         Admin
       </v-btn>
       <!-- Logout Button visible only if user is logged in -->
@@ -69,15 +69,26 @@
 <script setup>
 import { useAppConfigsStore } from "@/stores/appConfigsStore";
 import { mapState } from "pinia";
-import { user } from "@/configs/firebase";
+import { user, isAdmin, auth } from "@/configs/firebase";
 import { signOut } from "firebase/auth";
-import { auth } from "@/configs/firebase";
+import { onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import { computed } from "vue";
 import { ref } from 'vue'
 
 const router = useRouter();
 const overlay = ref(false)
+
+onMounted(async () => {
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            isAdmin.value = userDoc.exists(); 
+        } else {
+            isAdmin.value = false;
+        }
+    });
+});
 
 const logout = async () => {
   try {
@@ -88,8 +99,6 @@ const logout = async () => {
     console.error("Error logging out:", error.message);
   }
 };
-
-
 
 const appNotification = useAppConfigsStore()
 const alerts = appNotification.notifications

@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { db } from "@/configs/firebase";
 import SignUp from "../components/SignUp.vue";
 import LogIn from "../components/LogIn.vue";
 import HomeView from '../views/HomeView.vue'
@@ -55,20 +57,35 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
     },
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  const auth = getAuth(); 
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+router.beforeEach(async (to, from, next) => {
+  const auth = getAuth();
 
-  if (requiresAuth && !auth.currentUser) {
-    next("/login"); 
+  const user = await new Promise(resolve => {
+      onAuthStateChanged(auth, resolve);
+  });
+
+  if (to.matched.some(record => record.meta.requiresAuth) && !user) {
+      next("/login"); 
+  } else if (to.matched.some(record => record.meta.requiresAdmin)) {
+      if (!user) {
+          next("/login");
+      } else {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+              next(); 
+          } else {
+              next("/");
+          }
+      }
   } else {
-    next(); 
+      next();
   }
 });
+
 
 export default router
