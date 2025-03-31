@@ -91,7 +91,13 @@ sensordataStore.$subscribe((mutation, state) => {
 
 const formatDataToCSV = (data) => {
   const headers = ['Timestamp', 'Value'];
-  const rows = data.map(item => [item.time, item.data_values]);
+
+  const dataArray = data instanceof Map ? Array.from(data.values()) : data;
+
+  const rows = dataArray.map(item => [
+    item.time,
+    typeof item.data_values === 'object' ? JSON.stringify(item.data_values) : item.data_values
+  ]);
 
   let csvContent = 'data:text/csv;charset=utf-8,';
   csvContent += headers.join(',') + '\n'; 
@@ -101,6 +107,7 @@ const formatDataToCSV = (data) => {
 
   return csvContent;
 };
+
 
 const downloadCSV = () => {
   const csvContent = formatDataToCSV(reportData.value);
@@ -116,23 +123,28 @@ const downloadCSV = () => {
 const downloadPDF = () => {
   const doc = new jsPDF();
   doc.setFontSize(12);
-  
+
   let y = 10;
   doc.text('Report', 10, y);
   y += 10;
-  
-  reportData.value.forEach(item => {
-    doc.text(`${item.time}: ${item.data_values}`, 10, y);
+
+  const dataArray = reportData.value instanceof Map ? Array.from(reportData.value.values()) : reportData.value;
+
+  dataArray.forEach(item => {
+    doc.text(`${item.time}: ${String(item.data_values)}`, 10, y);
     y += 10;
   });
-  
+
   doc.save('report.pdf');
 };
 
+
 const downloadExcel = () => {
-  const structuredData = reportData.value.map(item => ({
+  const dataArray = reportData.value instanceof Map ? Array.from(reportData.value.values()) : reportData.value;
+
+  const structuredData = dataArray.map(item => ({
     Timestamp: item.time,
-    Value: item.data_values
+    Value: item.data_values 
   }));
 
   const ws = utils.json_to_sheet(structuredData);
@@ -140,6 +152,7 @@ const downloadExcel = () => {
   utils.book_append_sheet(wb, ws, 'Report');
   writeFile(wb, 'report.xlsx');
 };
+
 </script>
 
 <style scoped>
