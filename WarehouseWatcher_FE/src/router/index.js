@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getAuth } from "firebase/auth";
+import SignUp from "../components/SignUp.vue";
+import LogIn from "../components/LogIn.vue";
 import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import SpaceView from '../views/SpaceView.vue'
@@ -15,19 +18,32 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/login',
+      name: 'login',
+      component: LogIn,
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignUp,
+    }, 
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/space',
       name: 'space',
       component: SpaceView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/compliance',
       name: 'compliance',
       component: ReportView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/about',
@@ -39,6 +55,7 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminView,
+      meta: { requiresAuth: true },
     },
   ],
 })
