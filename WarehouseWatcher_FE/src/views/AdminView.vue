@@ -11,7 +11,7 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
 
 <template>
   <div class="admin-container">
-    <aside class="side-bar">
+    <!-- <aside class="side-bar">
       <h2>Admin Panel</h2>
       <nav>
         <ul>
@@ -21,7 +21,7 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
           <li><a href="#">Logs</a></li>
         </ul>
       </nav>
-    </aside>
+    </aside> -->
 
     <main class="report-page">
       <AdminThreshold />
@@ -32,10 +32,12 @@ import AdminThreshold from '@/components/AdminThreshold.vue';
 <style scoped>
 .admin-container {
   display: flex;
-  height: 100vh;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
   background-color: #f4f4f4;
   color: black;
-  /* text-align: center; */
+  align-items: center;
 }
 
 /* Sidebar Styling */
@@ -85,7 +87,8 @@ nav ul li a:hover {
 /* Main Content */
 .report-page {
   flex: 1;
-  margin-left: 280px; /* Matches sidebar width */
+  /* margin-left: 280px; Matches sidebar width */
+  /* sidebar is removed */
   padding: 20px;
   overflow-y: auto;
 }
@@ -101,7 +104,7 @@ h1 {
   }
 
   .report-page {
-    margin-left: 220px;
+    /* margin-left: 220px; */
   }
 }
 

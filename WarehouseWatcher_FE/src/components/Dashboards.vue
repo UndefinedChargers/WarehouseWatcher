@@ -69,7 +69,8 @@ export default {
 }
 
 .content-wrapper {
-  margin: 0 15rem;
+  align-items: center;
+  /* margin: 0 15rem; */
   /* display: flex; */
   /* justify-content: center; */
   /* align-items: flex-start; */
@@ -136,4 +137,6 @@ iframe {
   height: 100%;
   border: none;
 }
+
+
 </style>

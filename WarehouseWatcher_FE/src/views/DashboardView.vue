@@ -40,4 +40,20 @@
         min-height: 100%;
     }
 }
+
+@media (max-width: 600px) {
+    .dashboard {
+        display: flex;
+        overflow: auto;
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100%;
+    }
+}
+
 </style>
