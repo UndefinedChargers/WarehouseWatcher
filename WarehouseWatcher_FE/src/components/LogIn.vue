@@ -14,6 +14,7 @@
       <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
       <v-text-field
+        v-model="email"
         density="compact"
         placeholder="Email address"
         prepend-inner-icon="mdi-email-outline"
@@ -33,6 +34,7 @@
       </div>
 
       <v-text-field
+        v-model="password"
         :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
         :type="visible ? 'text' : 'password'"
         density="compact"
@@ -58,30 +60,46 @@
         size="large"
         variant="tonal"
         block
+        @click="logIn"
       >
         Log In
       </v-btn>
 
       <v-card-text class="text-center">
-        <a
-          class="text-blue text-decoration-none"
-          href="#"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <router-link to="/signup" class="text-blue text-decoration-none">
           Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
-        </a>
+        </router-link>
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
+import { auth } from "../configs/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "vue-router";
+
 export default {
-  data: () => ({
-    visible: false,
-  }),
-}
+  setup() {
+    const email = ref("");
+    const password = ref("");
+    const error = ref(null);
+    const router = useRouter();
+
+    const logIn = async () => {
+      try {
+        await signInWithEmailAndPassword(auth, email.value, password.value);
+        console.log("Successfully Signed In!");
+        router.push("/dashboard"); 
+      } catch (err) {
+        error.value = "Invalid email or password.";
+      }
+    };
+
+    return { email, password, error, logIn };
+  },
+};
 </script>
 
 <style scoped> 
