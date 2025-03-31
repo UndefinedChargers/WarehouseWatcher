@@ -159,8 +159,8 @@ export const sensor_object = [{
     unit: '%',
     min_threshold: 25,
     max_threshold: 75,
-    color_good: new Color3(0, 1, 0),
-    color_warning: new Color3(1, 0.65, 0),
+    color_good: new Color3(0, 0, 1),
+    color_warning: new Color3(1, 0.5, 0),
     color_bad: new Color3(1, 0, 0),
 },
 {
@@ -195,9 +195,9 @@ export const sensor_object = [{
     unit: '%',
     min_threshold: 25,
     max_threshold: 75,
-    color_good: new Color3(1, 0, 0),
-    color_warning: new Color3(0, 1, 0),
-    color_bad: new Color3(0, 1, 0),
+    color_good: new Color3(0, 0, 1),
+    color_warning: new Color3(1, 0.5, 0),
+    color_bad: new Color3(1, 0, 0),
 },
 {
     meshname: "sensor3_air",

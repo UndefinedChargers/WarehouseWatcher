@@ -31,8 +31,12 @@
         <h2>Features</h2>
         <ul>
           <li><strong>Dashboard</strong> Your Data to Valuable Business Insights</li>
-          <li><strong>Space</strong> Optimzation of Warehouse Operation in 3D Space</li>
-          <li><strong>Compliance</strong> Daily Facility Reports for Your Regulatory Compliance</li>
+          <li><strong>Data Visualization</strong> Direct Connection with the time-series database </li>
+          <li><strong>Space</strong> Optimization of Warehouse Operation in 3D Space</li>
+          <li><strong>Inventory</strong> Direct Connection with ERP (Odoo) in 3D Space</li>
+          <li><strong>Report</strong> Time-series data Reports for Your Regulatory Compliance</li>
+          <li><strong>Notification</strong> Monitoring threshold events </li>
+          <li><strong>Admin Setting</strong> Direct threshold settings </li>
         </ul>
 
         <h2>The Team</h2>
@@ -66,6 +70,8 @@ export default {
   /* background: #121212; */
   text-align: center;
   padding: 2rem;
+  overflow: auto;
+  height: 100%;
 }
 
 .hero {
