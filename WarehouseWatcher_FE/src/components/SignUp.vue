@@ -1,5 +1,10 @@
 <!-- 
- https://vuetifyjs.com/en/components/text-fields/#password-input
+ FILE: SignUp.vue
+ PROJECT: Warehouse Watcher
+ PROGRAMMER: Undefined Chargers - Salma Rageh
+ FIRST VERSION: 
+ DESCRIPTION: 
+ References: Starting code- https://vuetifyjs.com/en/components/text-fields/#password-input
 -->
  
 <template>
