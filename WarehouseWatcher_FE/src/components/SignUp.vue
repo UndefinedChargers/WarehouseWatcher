@@ -69,6 +69,7 @@ export default {
   setup() {
       const email = ref("");
       const password = ref("");
+      const visible = ref(false);
       const error = ref(null);
       const router = useRouter();
 
@@ -82,7 +83,7 @@ export default {
           }
       };
 
-      return { email, password, error, signUp };
+      return { email, password, visible, error, signUp };
   },
 };
 </script>
