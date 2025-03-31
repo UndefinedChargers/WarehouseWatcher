@@ -13,7 +13,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins=["*"])
 
 # Authorization token in header
 headers = {
@@ -189,7 +189,3 @@ def postPanelThresholdChange(dashboardURL, panelID, min, max):
             return get_response.text
     else:
         return jsonify({"error": "failed to post panel change."}), 400 
-
-#   Main app
-if __name__ == '__main__':
-    app.run(debug=True, port=PORT)

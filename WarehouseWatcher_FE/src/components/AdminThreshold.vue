@@ -66,7 +66,7 @@
     //  Send to backend grafana service
     console.log(`Sending to GrafanaService: ${id} ${min} ${max}`);
     try {
-      const response = await fetch("http://localhost:5000/grafana_threshold_update", {
+      const response = await fetch("https://grafanaservice-eda5c3h8habgbabn.canadaeast-01.azurewebsites.net/grafana_threshold_update", {
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify({
