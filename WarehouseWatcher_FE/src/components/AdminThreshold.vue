@@ -49,6 +49,46 @@
     sensor.current_max = sensordata_object.max_threshold;
   })
  };
+
+  // Update Grafana Thresholds
+  // - William A.
+  const updateGrafana = async (id, min, max, curMin, curMax, member, value) => {
+    //  Parse min and max threshold values
+    if (member == "min_threshold") {
+      min = value;
+      max = curMax;
+    } 
+    else if (member == "max_threshold") {
+      min = curMin;
+      max = value; 
+    }
+
+    //  Send to backend grafana service
+    console.log(`Sending to GrafanaService: ${id} ${min} ${max}`);
+    try {
+      const response = await fetch("https://grafanaservice-eda5c3h8habgbabn.canadaeast-01.azurewebsites.net/grafana_threshold_update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+          sensor_id: id,
+          min_value: min,
+          max_value: max
+        })
+    })
+
+      //  Check response from backend
+      console.log(`Response status: ${response.status}`);
+      const grafanaResponse = await response.json();
+      if (!response.ok) {
+        alert(`Error: ${grafanaResponse.error}`)
+      }
+
+    //  Catch error messages if failed  
+    } catch (error) {
+      console.error(`Fetch failed: ${error}`);
+      alert(`Grafana Update failed: ${error.message}`);
+    }
+  }
  
  // Update single threshold
  const updateConfigs = (sensor, type) => {
@@ -62,6 +102,7 @@
    }
 
    objectConfig.setObjectMemberValue(sensor.id, member, value);
+   updateGrafana(sensor.id, sensor.min, sensor.max, sensor.current_min, sensor.current_max, member, value);
  };
  
  // Save all thresholds at once
