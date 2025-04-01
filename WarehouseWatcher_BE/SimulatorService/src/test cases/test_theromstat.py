@@ -1,3 +1,10 @@
+# FILE :test_thermostat.py
+# PROJECT :Wharehouse Watcher
+# PROGRAMMER : Amel korandippillil Sunil
+# FIRST VERSION : 
+# DESCRIPTION :This class basically has some unit test for the thermostat functionality
+
+
 import sys
 import os
 import pytest
@@ -39,3 +46,15 @@ def test_decrement_temperature_below_zero():
     # Verify that the temperature is correctly updated and rounded.
     assert sensor.set_temperature == -0.5
     assert sensor.temperataure_generater() == -0.5
+
+def test_increment_temperature_rounding(thermostat_sensor):
+    
+    # this basically set the value to to three digit float as given .351
+    thermostat_sensor.set_temperature = 25.351
+    # Increment the temperature by 1.0.
+    thermostat_sensor.set_increment_temp_one()  
+    # Expected new raw value: 26.35
+    # Verify that the rounded temperature is 26.35.
+    assert thermostat_sensor.temperataure_generater() == 26.35
+
+
