@@ -1,5 +1,5 @@
 <!-- 
- FILE: LogIn.vue
+ FILE: SignUp.vue
  PROJECT: Warehouse Watcher
  PROGRAMMER: Undefined Chargers - Salma Rageh
  FIRST VERSION: 
@@ -41,22 +41,25 @@
         @click:append-inner="visible = !visible"
       ></v-text-field>
 
+      <v-alert v-if="error" type="error" class="mb-3">{{ error }}</v-alert>
+
       <v-btn
         class="mb-8"
         color="blue"
         size="large"
         variant="tonal"
         block
-        @click="logIn"
+        @click="signUp"
       >
-        Log In
+        Sign Up
       </v-btn>
 
       <v-card-text class="text-center">
-        <router-link to="/signup" class="text-blue text-decoration-none">
-          Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
-        </router-link>
+          <router-link to="/login" class="text-blue text-decoration-none">
+              Already have an account? Log in <v-icon icon="mdi-chevron-right"></v-icon>
+          </router-link>
       </v-card-text>
+
     </v-card>
   </div>
 </template>
@@ -64,28 +67,28 @@
 <script>
 import { ref } from "vue";
 import { auth } from "../configs/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router";
 
 export default {
   setup() {
-    const email = ref("");
-    const password = ref("");
-    const visible = ref(false);
-    const error = ref(null);
-    const router = useRouter();
+      const email = ref("");
+      const password = ref("");
+      const visible = ref(false);
+      const error = ref(null);
+      const router = useRouter();
 
-    const logIn = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, email.value, password.value);
-        console.log("Successfully Signed In!");
-        router.push("/dashboard"); 
-      } catch (err) {
-        error.value = "Invalid email or password.";
-      }
-    };
+      const signUp = async () => {
+          try {
+          await createUserWithEmailAndPassword(auth, email.value, password.value);
+          console.log("Successfully Registered");
+          router.push("/login");
+          } catch (err) {
+              error.value = "Failed to create account.";
+          }
+      };
 
-    return { email, password, visible, error, logIn };
+      return { email, password, visible, error, signUp };
   },
 };
 </script>

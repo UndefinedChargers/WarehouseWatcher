@@ -18,17 +18,21 @@
       <v-btn @click="$router.push({path:'/about'})">
         About
       </v-btn>
-      <v-btn @click="$router.push({path:'/dashboard'})"> 
+      <v-btn v-if="user" @click="$router.push({path:'/dashboard'})"> 
         Dashboard
       </v-btn>
-      <v-btn @click="$router.push({path:'/space'})">
+      <v-btn v-if="user" @click="$router.push({path:'/space'})">
         Space
       </v-btn>
-      <v-btn @click="$router.push({path:'/compliance'})">
+      <v-btn v-if="user" @click="$router.push({path:'/compliance'})">
         Report
       </v-btn>
-      <v-btn @click="$router.push({path:'/admin'})">
+      <v-btn v-if="isAdmin" @click="$router.push({path:'/admin'})">
         Admin
+      </v-btn>
+      <!-- Logout Button visible only if user is logged in -->
+      <v-btn v-if="user" @click="logout">
+        Logout
       </v-btn>
       
       <v-btn class="text-none" stacked>
@@ -65,10 +69,36 @@
 <script setup>
 import { useAppConfigsStore } from "@/stores/appConfigsStore";
 import { mapState } from "pinia";
+import { user, isAdmin, auth } from "@/configs/firebase";
+import { signOut } from "firebase/auth";
+import { onMounted } from "vue";
+import { useRouter } from 'vue-router';
 import { computed } from "vue";
 import { ref } from 'vue'
 
+const router = useRouter();
 const overlay = ref(false)
+
+onMounted(async () => {
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            isAdmin.value = userDoc.exists(); 
+        } else {
+            isAdmin.value = false;
+        }
+    });
+});
+
+const logout = async () => {
+  try {
+    await signOut(auth);  
+    console.log("User logged out successfully");
+    router.push('/login');  
+  } catch (error) {
+    console.error("Error logging out:", error.message);
+  }
+};
 
 const appNotification = useAppConfigsStore()
 const alerts = appNotification.notifications
